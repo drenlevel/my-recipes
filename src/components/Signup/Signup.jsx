@@ -7,18 +7,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { auth } from '../../firebase';
-import { RegisterFormSchema } from '../../schemas/Register.validator';
+import { auth, db } from '#utils/firebase';
+import { RegisterFormSchema } from '#schemas/Register.validator';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { LoginFormSchema } from '../../schemas/Login.validator';
+import { doc, setDoc } from 'firebase/firestore';
 
-export const Login = () => {
+export const SignUp = () => {
   //local state
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,24 +30,30 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(LoginFormSchema),
-  });
+  } = useForm({ resolver: yupResolver(RegisterFormSchema) });
 
   // handlers
-  const onSubmit = (data) => {
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .then(() => navigate('/home'))
-      .catch((err) => {
-        if (
-          err.code === 'auth/user-not-found' ||
-          err.code === 'auth/wrong-password'
-        )
-          toast.error('Wrong credentials');
+  const onSubmit = async data => {
+    try {
+      const res = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+
+      await setDoc(doc(db, 'users', res.user.uid), {
+        ...data,
+        name: data.name,
       });
+      toast.success('Successfully created your account!');
+      navigate('/login');
+    } catch (err) {
+      if (err.code === 'auth/email-already-in-use')
+        toast.error('This user is already taken');
+    }
   };
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword(show => !show);
 
   return (
     <Box
@@ -60,7 +66,16 @@ export const Login = () => {
       my="10%"
     >
       <Box display="flex" flexDirection="column" gap={2}>
-        <Typography textAlign="center">Login to your account</Typography>
+        <Typography textAlign="center">Create an account</Typography>
+        <TextField
+          id="outlined-basic"
+          label="Name"
+          size="small"
+          variant="outlined"
+          helperText={errors?.name?.message}
+          error={!!errors.name}
+          {...register('name')}
+        />
         <TextField
           id="outlined-basic"
           label="Email"
@@ -74,8 +89,8 @@ export const Login = () => {
           id="outlined-basic"
           label="Password"
           type={showPassword ? 'text' : 'password'}
-          size="small"
           variant="outlined"
+          size="small"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -94,22 +109,12 @@ export const Login = () => {
           {...register('password')}
         />
         <Button type="submit" variant="contained">
-          Login
+          Register
         </Button>
       </Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        mt={2}
-      >
-        <Typography textAlign="center" fontSize={12}>
-          Don't have an account? <Link to="/signup">Create one</Link>
-        </Typography>
-        <Link to="/forgot-password" style={{ fontSize: 12 }}>
-          Forgot Password?
-        </Link>
-      </Box>
+      <Typography mt={2} textAlign="center" fontSize={12}>
+        Already have an account? <Link to="/login">Login</Link>
+      </Typography>
     </Box>
   );
 };
