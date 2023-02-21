@@ -1,43 +1,24 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
-import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import React, { useContext } from 'react';
+import { Box, Button } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { db } from '../../../firebase';
-import { AddRecipeFormSchema } from '../../../schemas/AddRecipe.validator';
-import { AuthContext } from '../../AuthProvider/AuthProvider';
+import { AuthContext } from '#components/AuthProvider/AuthProvider';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '#utils/firebase';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { AddRecipeFormSchema } from '#schemas/AddRecipe.validator';
 
-export const UpdateRecipe = ({ open, setOpen, id }) => {
-  const recipeRef = doc(db, 'recipes', id);
-  const { currentUser } = useContext(AuthContext);
-  const [recipe, setRecipe] = useState();
-
-  useEffect(() => {
-    // LISTEN (REALTIME)
-    (async () => {
-      let recipe = {};
-      const recipes = await getDoc(recipeRef);
-      if (recipes.exists()) {
-        recipe = recipes.data();
-        setRecipe(recipe);
-      } else {
-        console.log('No such document!');
-      }
-    })();
-  }, []);
-
+export const AddRecipeModal = ({ open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const { currentUser } = useContext(AuthContext);
+
   // hook form
   const {
     register,
@@ -47,8 +28,8 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
     resolver: yupResolver(AddRecipeFormSchema),
   });
 
-  const onSubmit = async (data) => {
-    await updateDoc(recipeRef, {
+  const onSubmit = async data => {
+    await addDoc(collection(db, 'recipes'), {
       title: data.title,
       description: data.description,
       user: currentUser.uid,
@@ -60,17 +41,16 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Update recipe</DialogTitle>
+        <DialogTitle>Add new recipe</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Update title and description of your recipe
+            Write title and description of your recipe
           </DialogContentText>
 
           <TextField
             autoFocus
             size="small"
             margin="dense"
-            defaultValue={recipe?.title}
             id="name"
             label="Title"
             fullWidth
@@ -83,7 +63,6 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
             multiline
             size="small"
             rows={5}
-            defaultValue={recipe?.description}
             margin="dense"
             id="name"
             label="Description"
@@ -96,7 +75,7 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Update recipe</Button>
+          <Button type="submit">Add recipe</Button>
         </DialogActions>
       </Box>
     </Dialog>

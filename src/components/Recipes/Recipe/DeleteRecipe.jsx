@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { db } from '#utils/firebase';
 
 export const DeleteRecipe = ({ open, setOpen, id }) => {
   const handleClose = () => {

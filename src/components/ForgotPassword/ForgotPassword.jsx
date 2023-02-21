@@ -1,11 +1,9 @@
-import { updatePassword, sendPasswordResetEmail } from 'firebase/auth';
-import React, { useContext } from 'react';
-import { AuthContext } from '../AuthProvider/AuthProvider';
-import { auth } from '../../firebase';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '#utils/firebase';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ForgotPasswordSchema } from '../../schemas/ForgotPassword.validator';
+import { ForgotPasswordSchema } from '#schemas/ForgotPassword.validator';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,13 +18,13 @@ export const ForgotPassword = () => {
   } = useForm({ resolver: yupResolver(ForgotPasswordSchema) });
 
   // handlers
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     sendPasswordResetEmail(auth, data.email)
       .then(() => {
         toast.success('Email to reset password sent!');
         navigate('/login');
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.code === 'auth/user-not-found') toast.error('User not found');
       });
   };
