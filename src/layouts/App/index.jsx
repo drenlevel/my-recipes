@@ -1,18 +1,21 @@
-import { AuthProvider } from './components/AuthProvider/AuthProvider';
+// Libs
 import {
+  Navigate,
   Route,
   BrowserRouter as Router,
   Routes,
-  Navigate,
 } from 'react-router-dom';
-import { SignUp } from './components/Signup/Signup';
-import { RequireAuthRoute } from './components/RequireAuthRoute/RequireAuthRoute';
-import { Home } from './components/Home/Home';
-import { Login } from './components/Login/Login';
-import { ForgotPassword } from './components/ForgotPassword/ForgotPassword';
-import { MyRecipes } from './components/Recipes/MyRecipes/MyRecipes';
 
-function App() {
+// Components
+import { AuthProvider } from '#components/AuthProvider/AuthProvider';
+import { ForgotPassword } from '#components/ForgotPassword/ForgotPassword';
+import { Home } from '#components/Home/Home';
+import { Login } from '#components/Login/Login';
+import { MyRecipes } from '#components/Recipes/MyRecipes/MyRecipes';
+import { RequireAuthRoute } from '#components/RequireAuthRoute/RequireAuthRoute';
+import { SignUp } from '#components/Signup/Signup';
+
+export default function App() {
   return (
     <AuthProvider>
       <Router>
@@ -30,5 +33,3 @@ function App() {
     </AuthProvider>
   );
 }
-
-export default App;

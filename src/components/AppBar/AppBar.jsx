@@ -2,7 +2,6 @@ import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
@@ -11,8 +10,8 @@ import Container from '@mui/material/Container';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import { auth } from '../../firebase';
-import { AddRecipeModal } from '../Recipes/AddRecipeModal/AddRecipeModal';
+import { auth } from '#utils/firebase';
+import { AddRecipeModal } from '#components/Recipes/AddRecipeModal/AddRecipeModal';
 import { useNavigate } from 'react-router-dom';
 
 const ResponsiveAppBar = () => {
@@ -22,7 +21,7 @@ const ResponsiveAppBar = () => {
 
   const [openModalAddRecipe, setOpenModalAddRecipe] = useState(false);
 
-  const handleOpenUserMenu = (event) => {
+  const handleOpenUserMenu = event => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -96,7 +95,7 @@ const ResponsiveAppBar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
+                {settings.map(setting => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center" onClick={setting.action}>
                       {setting.title}

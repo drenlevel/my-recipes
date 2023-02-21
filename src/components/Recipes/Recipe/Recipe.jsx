@@ -28,7 +28,8 @@ export const Recipe = ({ recipe }) => {
   //hooks
   const { pathname } = useLocation();
 
-  const ExpandMore = styled((props) => {
+  const ExpandMore = styled(props => {
+    // eslint-disable-next-line no-unused-vars
     const { expand, ...other } = props;
     return <IconButton {...other} />;
   })(({ theme, expand }) => ({

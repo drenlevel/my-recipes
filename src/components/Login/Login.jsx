@@ -7,18 +7,19 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { auth, db } from '../../firebase';
-import { RegisterFormSchema } from '../../schemas/Register.validator';
+import { auth } from '#utils/firebase';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { doc, setDoc } from 'firebase/firestore';
+import { LoginFormSchema } from '#schemas/Login.validator';
 
-export const SignUp = () => {
+import styles from './styles.module.css';
+
+export const Login = () => {
   //local state
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,32 +31,22 @@ export const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(RegisterFormSchema),
-  });
+  } = useForm({ resolver: yupResolver(LoginFormSchema) });
 
   // handlers
-  const onSubmit = async (data) => {
-    try {
-      const res = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      await setDoc(doc(db, 'users', res.user.uid), {
-        ...data,
-        name: data.name,
+  const onSubmit = data => {
+    signInWithEmailAndPassword(auth, data.email, data.password)
+      .then(() => navigate('/home'))
+      .catch(err => {
+        if (
+          err.code === 'auth/user-not-found' ||
+          err.code === 'auth/wrong-password'
+        )
+          toast.error('Wrong credentials');
       });
-      toast.success('Successfully created your account!');
-      navigate('/login');
-    } catch (err) {
-      if (err.code === 'auth/email-already-in-use')
-        toast.error('This user is already taken');
-    }
   };
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword(show => !show);
 
   return (
     <Box
@@ -68,16 +59,7 @@ export const SignUp = () => {
       my="10%"
     >
       <Box display="flex" flexDirection="column" gap={2}>
-        <Typography textAlign="center">Create an account</Typography>
-        <TextField
-          id="outlined-basic"
-          label="Name"
-          size="small"
-          variant="outlined"
-          helperText={errors?.name?.message}
-          error={!!errors.name}
-          {...register('name')}
-        />
+        <Typography textAlign="center">Login to your account</Typography>
         <TextField
           id="outlined-basic"
           label="Email"
@@ -91,8 +73,8 @@ export const SignUp = () => {
           id="outlined-basic"
           label="Password"
           type={showPassword ? 'text' : 'password'}
-          variant="outlined"
           size="small"
+          variant="outlined"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -111,12 +93,34 @@ export const SignUp = () => {
           {...register('password')}
         />
         <Button type="submit" variant="contained">
-          Register
+          Login
         </Button>
       </Box>
-      <Typography mt={2} textAlign="center" fontSize={12}>
-        Already have an account? <Link to="/login">Login</Link>
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        flexDirection="column"
+        mt={2}
+      >
+        <Typography
+          textAlign="center"
+          fontSize={12}
+          className={styles.noAccountCreateOne}
+        >
+          {`Don't have an account?`}
+          <Link to="/signup">Create</Link>
+        </Typography>
+        <Typography
+          textAlign="center"
+          fontSize={12}
+          className={styles.noAccountCreateOne}
+        >
+          Forgot Password?
+          <Link to="/forgot-password" style={{ fontSize: 12 }}>
+            Reset
+          </Link>
+        </Typography>
+      </Box>
     </Box>
   );
 };

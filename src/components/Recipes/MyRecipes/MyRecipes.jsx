@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material';
 import {
-  collection,
   collectionGroup,
   getDocs,
   onSnapshot,
@@ -8,10 +7,10 @@ import {
   where,
 } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
-import { db } from '../../../firebase';
-import ResponsiveAppBar from '../../AppBar/AppBar';
-import { AuthContext } from '../../AuthProvider/AuthProvider';
-import { Recipe } from '../Recipe/Recipe';
+import { db } from '#utils/firebase';
+import ResponsiveAppBar from '#components/AppBar/AppBar';
+import { AuthContext } from '#components/AuthProvider/AuthProvider';
+import { Recipe } from '#components/Recipes/Recipe/Recipe';
 
 export const MyRecipes = () => {
   const [recipes, setRecipes] = useState();
@@ -23,25 +22,17 @@ export const MyRecipes = () => {
 
   useEffect(() => {
     // LISTEN (REALTIME)
-    const unsub = onSnapshot(
+    return onSnapshot(
       query(recipesRef, where('user', '==', currentUser.uid)),
-      async (snapShot) => {
-        let list = [];
-        const recipes = await getDocs(q);
+      () => {
+        getDocs(q).then(res => {
+          const recipes = res.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        recipes.docs.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
+          setRecipes(recipes);
         });
-        setRecipes(list);
       },
-      (error) => {
-        console.log(error);
-      }
+      console.log,
     );
-
-    return () => {
-      unsub();
-    };
   }, []);
 
   return (
@@ -54,11 +45,11 @@ export const MyRecipes = () => {
         mx={2}
         my={2}
       >
-        {recipes?.length > 0 ? (
-          recipes?.map((recipe) => <Recipe recipe={recipe} />)
-        ) : (
-          <Typography>No recipes found</Typography>
-        )}
+        {!!recipes?.length &&
+          recipes?.map((recipe, i) => (
+            <Recipe key={`recipe-${i + 1}`} recipe={recipe} />
+          ))}
+        {!recipes?.length && <Typography>No recipes found</Typography>}
       </Box>
     </>
   );
