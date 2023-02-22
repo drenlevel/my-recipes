@@ -14,33 +14,15 @@ import { auth } from '#utils/firebase';
 import { AddRecipeModal } from '#components/Recipes/AddRecipeModal/AddRecipeModal';
 import { useNavigate } from 'react-router-dom';
 
-const ResponsiveAppBar = () => {
-  const [anchorElUser, setAnchorElUser] = useState(null);
-
+export default function ResponsiveAppBar() {
+  // State
   const navigate = useNavigate();
-
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const [openModalAddRecipe, setOpenModalAddRecipe] = useState(false);
 
-  const handleOpenUserMenu = event => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-  const settings = [
-    {
-      id: 1,
-      title: 'Add recipe',
-      action: () => setOpenModalAddRecipe(true),
-    },
-    {
-      id: 2,
-      title: 'My recipes',
-      action: () => navigate('/my-recipes'),
-    },
-    { id: 3, title: 'Logout', action: () => auth.signOut() },
-  ];
+  // Callbacks
+  const handleOpenUserMenu = event => setAnchorElUser(event.currentTarget);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
 
   return (
     <>
@@ -83,25 +65,33 @@ const ResponsiveAppBar = () => {
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map(setting => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center" onClick={setting.action}>
-                      {setting.title}
-                    </Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography
+                    textAlign="center"
+                    onClick={() => setOpenModalAddRecipe(true)}
+                  >
+                    Add recipe
+                  </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography
+                    textAlign="center"
+                    onClick={() => navigate('/my-recipes')}
+                  >
+                    My recipes
+                  </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center" onClick={() => auth.signOut()}>
+                    Logout
+                  </Typography>
+                </MenuItem>
               </Menu>
             </Box>
           </Toolbar>
@@ -113,5 +103,4 @@ const ResponsiveAppBar = () => {
       />
     </>
   );
-};
-export default ResponsiveAppBar;
+}
