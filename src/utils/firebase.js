@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
+import { serverTimestamp as _serverTimestamp } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,10 +15,16 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = (() => {
+  // Initialize Firebase app only once!
+  if (!getApps().length) {
+    return initializeApp(firebaseConfig);
+  }
+})();
+
 export const auth = getAuth();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const serverTimestamp = _serverTimestamp();
 
-export default getFirestore(app);
+export default db;
