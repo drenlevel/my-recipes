@@ -1,6 +1,12 @@
+// Libraries
 import * as yup from 'yup';
 
-export const AddRecipeFormSchema = yup.object({
-  title: yup.string().required('Title is required'),
-  description: yup.string().required('Description is required'),
-});
+// Helpers
+import * as translate from '#utils/translate';
+
+const requiredFields = translate.recipe.getAll('ID', 'SERVINGS', 'CUISINES');
+const fieldEntries = Object.entries(requiredFields);
+const makeRequiredString = x => yup.string().required(`${x} is required!`);
+const reducer = (acc, [k, v]) => ({ ...acc, [k]: makeRequiredString(v) });
+
+export const AddSchema = yup.object(fieldEntries.reduce(reducer, {}));

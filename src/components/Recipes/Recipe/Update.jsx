@@ -13,7 +13,7 @@ import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { db } from '#utils/firebase';
-import { AddRecipeFormSchema } from '#schemas/AddRecipe.validator';
+import { AddSchema } from '#schemas/AddRecipe.validator';
 import { AuthContext } from '#components/AuthProvider/AuthProvider';
 
 export const UpdateRecipe = ({ open, setOpen, id }) => {
@@ -44,7 +44,7 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(AddRecipeFormSchema),
+    resolver: yupResolver(AddSchema),
   });
 
   const onSubmit = async data => {

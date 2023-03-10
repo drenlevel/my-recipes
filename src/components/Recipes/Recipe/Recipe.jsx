@@ -11,8 +11,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Tooltip, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
-import { UpdateRecipe } from './UpdateRecipe';
-import { DeleteRecipe } from './DeleteRecipe';
+import { UpdateRecipe } from './Update';
+import { DeleteRecipe } from './Delete';
 
 export const Recipe = ({ recipe }) => {
   //local state

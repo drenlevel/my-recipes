@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,14 +11,14 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import { auth } from '#utils/firebase';
-import { AddRecipeModal } from '#components/Recipes/AddRecipeModal/AddRecipeModal';
+import { AddRecipeModal } from '#components/Recipes/Recipe/Add';
 import { useNavigate } from 'react-router-dom';
 
 export default function ResponsiveAppBar() {
   // State
+  const addRecipeRef = useRef({});
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [openModalAddRecipe, setOpenModalAddRecipe] = useState(false);
 
   // Callbacks
   const handleOpenUserMenu = event => setAnchorElUser(event.currentTarget);
@@ -74,7 +74,7 @@ export default function ResponsiveAppBar() {
                 <MenuItem onClick={handleCloseUserMenu}>
                   <Typography
                     textAlign="center"
-                    onClick={() => setOpenModalAddRecipe(true)}
+                    onClick={() => addRecipeRef.current.toggleShown(true)}
                   >
                     Add recipe
                   </Typography>
@@ -97,10 +97,7 @@ export default function ResponsiveAppBar() {
           </Toolbar>
         </Container>
       </AppBar>
-      <AddRecipeModal
-        open={openModalAddRecipe}
-        setOpen={setOpenModalAddRecipe}
-      />
+      <AddRecipeModal ref={addRecipeRef} />
     </>
   );
 }

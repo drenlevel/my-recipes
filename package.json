@@ -38,6 +38,7 @@
   "imports": {
     "#assets/*": "./src/assets/*",
     "#components/*": "./src/components/*",
+    "#constants/*": "./src/constants/*",
     "#layouts/*": "./src/layouts/*",
     "#schemas/*": "./src/schemas/*",
     "#utils/*": "./src/utils/*"
