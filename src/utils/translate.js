@@ -7,7 +7,7 @@ import * as TRANSLATIONS from '#constants/translations';
 /**
  * @typedef {('ID' | 'TITLE' | 'DESCRIPTION' | 'IMAGE' | 'CUISINES' | 'TYPE' | 'COOKING_TIME' | 'INGREDIENTS' | 'INSTRUCTIONS' | 'SERVINGS')} RecipeKeys
  * @typedef {('id' | 'title' | 'description' | 'image' | 'cuisines' | 'type' | 'cookingTime' | 'ingredients' | 'instructions' | 'servings')} RecipeKeysCamelCase
- * @typedef {Partial<Record<RecipeKeysCamelCase, String>>} GetAllReturnVal
+ * @typedef {Record<RecipeKeysCamelCase, String>} GetAllReturnVal
  */
 
 /**
@@ -22,16 +22,42 @@ export const recipe = (rawKey = '') => {
   return terms[key] ?? rawKey;
 };
 
-/**
- * Recursively call {@link recipe} to translate all keys, unless an exlucion
- * is specified.
- * @param {...RecipeKeys} exclusionArgs One of {@link RecipeKeys}.
- * @returns {GetAllReturnVal} An object of camel-cased keys and their translations.
- */
-recipe.getAll = (...exclusionArgs) => {
-  return Object.keys(TRANSLATIONS.RECIPE).reduce((acc, key) => {
-    if (exclusionArgs.includes(key)) return acc;
+const getReducer =
+  (shouldInclude = true, ...keyArgs) =>
+  (acc, key) => {
+    const keyIsIncluded = keyArgs.includes(key);
+    const shouldSkip = shouldInclude ? !keyIsIncluded : keyIsIncluded;
+
+    if (shouldSkip) return acc;
 
     return { ...acc, [camelCase(key)]: recipe(key) };
-  }, {});
-};
+  };
+
+/**
+ * Recursively call {@link recipe} to translate all keys.
+ * @returns {GetAllReturnVal} An object of camel-cased keys and their translations.
+ */
+recipe.getAll = () =>
+  Object.keys(TRANSLATIONS.RECIPE).reduce(getReducer(false), {});
+
+/**
+ * Recursively call {@link recipe} to translate all keys with inclusion key(s).
+ * @param {...RecipeKeys} inclusionArgs One of {@link RecipeKeys}.
+ * @returns {Partial<GetAllReturnVal>} An object of camel-cased keys and their translations.
+ */
+recipe.getSomeIncluded = (...inclusionArgs) =>
+  Object.keys(TRANSLATIONS.RECIPE).reduce(
+    getReducer(true, ...inclusionArgs),
+    {},
+  );
+
+/**
+ * Recursively call {@link recipe} to translate all keys with exclusion key(s).
+ * @param {...RecipeKeys} exclusionArgs One of {@link RecipeKeys}.
+ * @returns {Partial<GetAllReturnVal>} An object of camel-cased keys and their translations.
+ */
+recipe.getSomeExcluded = (...exclusionArgs) =>
+  Object.keys(TRANSLATIONS.RECIPE).reduce(
+    getReducer(false, ...exclusionArgs),
+    {},
+  );

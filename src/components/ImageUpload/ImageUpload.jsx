@@ -14,10 +14,12 @@ import IconButton from '@mui/material/IconButton';
 // Styles
 import styles from './styles.module.css';
 import { forwardRef, useRef, useState } from 'react';
+import ImageDragAndDrop from './ImageDragAndDrop';
 
 const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
   const [imageFileName, setImageFileName] = useState('');
   const fileUploadRef = useRef({});
+  const dragAndDropContainerRef = useRef({});
 
   return (
     <FormControl fullWidth>
@@ -40,8 +42,11 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
                   edge="end"
                   sx={{ width: 'fit-content' }}
                   onClick={() => {
-                    setImageFileName('');
+                    const { setImage } = dragAndDropContainerRef.current ?? {};
                     fileUploadRef.current.value = '';
+
+                    setImage?.('');
+                    setImageFileName('');
                   }}
                 >
                   <BackspaceOutlined
@@ -79,18 +84,19 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
         style={{ display: 'none' }}
         onChange={({ target }) => {
           const [file] = target.files;
+          const { setImage } = dragAndDropContainerRef.current ?? {};
 
+          setImage?.(file);
           setImageFileName(file.name);
         }}
       />
-      {/*  <IconButton
-        aria-label="upload"
-        color="inherit"
-        sx={{ width: 'fit-content' }}
-        onClick={() => fileUploadRef.current.click()}
-      >
-        <AddToPhotosOutlined fontSize="large" />
-      </IconButton> */}
+      <ImageDragAndDrop
+        ref={dragAndDropContainerRef}
+        onDragSuccess={file => {
+          debugger;
+          setImageFileName(file.name);
+        }}
+      />
     </FormControl>
   );
 });

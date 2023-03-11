@@ -1,12 +1,10 @@
-export const RECIPE = Object.freeze({
-  ID: 'Id',
-  TITLE: 'Title',
-  DESCRIPTION: 'Description',
-  IMAGE: 'Image',
-  CUISINES: 'Cuisines',
-  TYPE: 'Type',
-  COOKING_TIME: 'Cooking time',
-  INGREDIENTS: 'Ingredients',
-  INSTRUCTIONS: 'Instructions',
-  SERVINGS: 'Servings',
-});
+export const ID = 'Id';
+export const TITLE = 'Title';
+export const DESCRIPTION = 'Description';
+export const IMAGE = 'Image';
+export const CUISINES = 'Cuisines';
+export const TYPE = 'Type';
+export const COOKING_TIME = 'Cooking time';
+export const INGREDIENTS = 'Ingredients';
+export const INSTRUCTIONS = 'Instructions';
+export const SERVINGS = 'Servings';

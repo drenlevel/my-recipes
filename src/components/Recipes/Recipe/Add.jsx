@@ -11,64 +11,39 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  TextField,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '#components/AuthProvider/AuthProvider';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '#utils/firebase';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { AddSchema } from '#schemas/AddRecipe.validator';
-import ImageUpload from '#components/ImageUpload/ImageUpload';
-import { camelCase } from 'change-case';
-import * as translate from '#utils/translate';
-
-const ADDITIONAL_FIELDS = [
-  'CUISINES',
-  'TYPE',
-  'COOKING_TIME',
-  'INGREDIENTS',
-  'INSTRUCTIONS',
-  'SERVINGS',
-].map(key => [camelCase(key), translate.recipe(key)]);
-
-const CommonRecipeField = forwardRef((props, ref) => (
-  <TextField
-    ref={ref}
-    fullWidth
-    id="name"
-    margin="dense"
-    size="small"
-    variant="standard"
-    {...props}
-  />
-));
-CommonRecipeField.displayName = 'CommonRecipeField';
+import * as RecipeField from '#components/RecipeField/RecipeField';
+import { toast } from 'react-hot-toast';
 
 export const AddRecipeModal = forwardRef((_, ref) => {
+  // State
+  const formRef = useRef({});
   const { currentUser } = useContext(AuthContext);
   const [shown, setShown] = useState(false);
-  const formRef = useRef({});
+  const { register, handleSubmit, formState } = useForm(AddSchema);
+  const { errors } = formState;
 
-  // hook form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(AddSchema) });
-
+  // Callbacks
   const onSubmit = async data => {
-    await addDoc(collection(db, 'recipes'), {
-      title: data.title,
-      description: data.description,
-      user: currentUser.uid,
-      timeStamp: serverTimestamp(),
-    });
-    setShown(false);
+    try {
+      await addDoc(collection(db, 'recipes'), {
+        ...data,
+        user: currentUser.uid,
+        timeStamp: serverTimestamp(),
+      });
+      setShown(false);
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
+  // Hooks
   useImperativeHandle(
     ref,
     () => ({ toggleShown: isOpen => setShown(state => isOpen ?? !state) }),
@@ -80,45 +55,51 @@ export const AddRecipeModal = forwardRef((_, ref) => {
       <Box ref={formRef} component="form" onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>Add new recipe</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Write title and description of your recipe
-          </DialogContentText>
-          <CommonRecipeField
-            helperText={errors?.title?.message}
-            error={!!errors?.title}
+          <RecipeField.Title
             {...register('title')}
+            error={errors?.title}
+            helperText={errors?.title?.message}
           />
-          <CommonRecipeField
-            multiline
-            rows={5}
-            label="Description"
-            helperText={errors?.description?.message}
-            error={!!errors?.description}
+          <RecipeField.Type
+            {...register('type')}
+            error={errors?.type}
+            helperText={errors?.type?.message}
+          />
+          <RecipeField.Description
             {...register('description')}
+            error={errors?.description}
+            helperText={errors?.description?.message}
           />
-          <ImageUpload
-            helperText={errors?.description?.image}
-            error={!!errors?.image}
-            inputProps={{ readOnly: true, tabIndex: -1 }}
+          <RecipeField.Image
             {...register('image')}
+            error={errors?.image}
+            helperText={errors?.image?.message}
           />
-          <CommonRecipeField
-            multiline
-            rows={5}
-            label="Description"
-            helperText={errors?.description?.message}
-            error={!!errors?.description}
-            {...register('description')}
+          <RecipeField.CookingTime
+            {...register('cookingTime')}
+            error={errors?.cookingTime}
+            helperText={errors?.cookingTime?.message}
           />
-          {ADDITIONAL_FIELDS.map(([key, label]) => (
-            <CommonRecipeField
-              key={key}
-              label={label}
-              helperText={errors?.[key]?.message}
-              error={!!errors?.[key]}
-              {...register(key)}
-            />
-          ))}
+          <RecipeField.Ingredients
+            {...register('ingredients')}
+            error={errors?.ingredients}
+            helperText={errors?.ingredients?.message}
+          />
+          <RecipeField.Instructions
+            {...register('instructions')}
+            error={errors?.instructions}
+            helperText={errors?.instructions?.message}
+          />
+          <RecipeField.Cuisines
+            {...register('cuisines')}
+            error={errors?.cuisines}
+            helperText={errors?.cuisines?.message}
+          />
+          <RecipeField.Servings
+            {...register('servings')}
+            error={errors?.servings}
+            helperText={errors?.servings?.message}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={setShown.bind(null, false)}>Cancel</Button>
