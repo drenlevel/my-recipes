@@ -9,7 +9,7 @@ import {
   uploadBytes,
 } from 'firebase/storage';
 import { serverTimestamp as _serverTimestamp } from 'firebase/database';
-import { dataUrlToBlob } from './object';
+import { fileToDataUrl } from './object';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -37,7 +37,7 @@ export const uploadImage = async (file, dataUrl) => {
   const fileName = file.name;
   const fileRef = getStorageRef('images/' + fileName);
 
-  await uploadBytes(dataUrlToBlob(dataUrl), { contentType: file.type });
+  await uploadBytes(fileToDataUrl(dataUrl), { contentType: file.type });
 
   const url = await getDownloadURL(fileRef);
 
