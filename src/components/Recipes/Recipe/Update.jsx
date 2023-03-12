@@ -33,7 +33,7 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
         console.log('No such document!');
       }
     })();
-  }, []);
+  }, [recipeRef]);
 
   const handleClose = () => {
     setOpen(false);

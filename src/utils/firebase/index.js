@@ -3,15 +3,7 @@ import { getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { serverTimestamp as _serverTimestamp } from 'firebase/database';
 import { getFirestore } from 'firebase/firestore';
-import {
-  getDownloadURL,
-  getStorage,
-  ref as getStorageRef,
-  uploadBytes,
-} from 'firebase/storage';
-
-// Helpers
-import { fileToDataUrl } from '#utils/object';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -34,16 +26,5 @@ export const auth = getAuth();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const serverTimestamp = _serverTimestamp();
-
-export const uploadImage = async (file, dataUrl) => {
-  const fileName = file.name;
-  const fileRef = getStorageRef('images/' + fileName);
-
-  await uploadBytes(fileToDataUrl(dataUrl), { contentType: file.type });
-
-  const url = await getDownloadURL(fileRef);
-
-  return url;
-};
 
 export default db;

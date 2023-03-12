@@ -13,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import { auth } from '#utils/firebase';
 import { AddRecipeModal } from '#components/Recipes/Recipe/Add';
-import { useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/material';
 import { useAuthContext } from '#utils/firebase/hooks';
 
@@ -21,13 +20,12 @@ export default function ResponsiveAppBar() {
   // State
   const { currentUser } = useAuthContext();
   const addRecipeRef = useRef({});
-  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   // Callbacks
   const handleOpenUserMenu = event => setAnchorElUser(event.currentTarget);
   const handleCloseUserMenu = () => setAnchorElUser(null);
-
+  console.log(currentUser);
   return (
     <>
       <AppBar position="static">
@@ -94,14 +92,6 @@ export default function ResponsiveAppBar() {
                     onClick={() => addRecipeRef.current.toggleShown(true)}
                   >
                     Add recipe
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
-                  <Typography
-                    textAlign="center"
-                    onClick={() => navigate('/my-recipes')}
-                  >
-                    My recipes
                   </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleCloseUserMenu}>

@@ -78,6 +78,8 @@ export const Login = () => {
           \nDid you initially signed in with another provider?`,
           { style: { textAlign: 'left' } },
         );
+      } else {
+        toast.error(err.message);
       }
 
       console.error(err);

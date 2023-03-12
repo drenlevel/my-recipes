@@ -75,8 +75,7 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
         ref={fileUploadRef}
         name="imgUpload"
         type="file"
-        accept="image/*"
-        capture="environment"
+        accept="capture=camera,image/*"
         style={{ display: 'none' }}
         onChange={({ target }) => {
           const [file] = target.files;

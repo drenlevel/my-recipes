@@ -44,7 +44,7 @@ export const useUserRecipes = ({ user, adapter }) => {
 
   // Memoized
   const { query } = useMemo(
-    () => getRecipesQuery(user ?? currentUser),
+    () => getRecipesQuery(user?.uid ?? currentUser?.uid),
     [user?.uid, currentUser?.uid],
   );
 

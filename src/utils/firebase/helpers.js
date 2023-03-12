@@ -1,8 +1,14 @@
 // Libraries
 import { doc, getDocs, setDoc } from 'firebase/firestore';
+import {
+  getDownloadURL,
+  ref as getStorageRef,
+  uploadBytes,
+} from 'firebase/storage';
 import { toast } from 'react-hot-toast';
 
 // Helpers
+import { fileToDataUrl } from '#utils/object';
 import db from '.';
 
 export const secureGetDocs = async refDoc => {
@@ -28,4 +34,20 @@ export const secureSetDoc = async (data, ...paths) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+export const uploadImage = async (file, dataUrl) => {
+  const fileName = file.name;
+  const fileRef = getStorageRef('images/' + fileName);
+
+  try {
+    await uploadBytes(fileToDataUrl(dataUrl), { contentType: file.type });
+    const url = await getDownloadURL(fileRef);
+
+    return url;
+  } catch (error) {
+    toast.error(error.message);
+  }
+
+  return '';
 };
