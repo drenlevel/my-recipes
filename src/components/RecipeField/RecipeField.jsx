@@ -13,7 +13,7 @@ const terms = translate.recipe.getAll();
 const makeField = (staticProps, displayName) => {
   const RecipeField = forwardRef((props, ref) => {
     if (/^image$/i.test(displayName)) {
-      return <ImageUpload {...props} />;
+      return <ImageUpload ref={ref} {...props} />;
     }
     // Select condition
     else if (/^select$/i.test(displayName)) {

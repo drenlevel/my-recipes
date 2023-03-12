@@ -1,23 +1,19 @@
 // Components
-import { FormControl, InputAdornment, TextField } from '@mui/material';
+import { AddToPhotosOutlined, BackspaceOutlined } from '@mui/icons-material';
 import {
-  AddToPhotosOutlined,
-  Filter1Outlined,
-  BackspaceOutlined,
-} from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-// import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-// import Filter1Icon from '@mui/icons-material/Filter1';
-
-// Helpers
+  FormControl,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from '@mui/material';
 
 // Styles
-import styles from './styles.module.css';
 import { forwardRef, useRef, useState } from 'react';
 import ImageDragAndDrop from './ImageDragAndDrop';
+import './styles.module.css';
 
 const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
-  const [imageFileName, setImageFileName] = useState('');
+  const [imageFile, setImageFile] = useState('');
   const fileUploadRef = useRef({});
   const dragAndDropContainerRef = useRef({});
 
@@ -36,7 +32,7 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
           tabIndex: -1,
           endAdornment: (
             <InputAdornment position="end">
-              {imageFileName && (
+              {imageFile && (
                 <IconButton
                   aria-label="upload image"
                   edge="end"
@@ -46,7 +42,7 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
                     fileUploadRef.current.value = '';
 
                     setImage?.('');
-                    setImageFileName('');
+                    setImageFile('');
                   }}
                 >
                   <BackspaceOutlined
@@ -71,8 +67,8 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
             </InputAdornment>
           ),
         }}
-        InputLabelProps={{ shrink: !!imageFileName }}
-        value={imageFileName}
+        InputLabelProps={{ shrink: !!imageFile }}
+        value={imageFile?.name}
       />
       <input
         {...inputProps}
@@ -87,15 +83,12 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
           const { setImage } = dragAndDropContainerRef.current ?? {};
 
           setImage?.(file);
-          setImageFileName(file.name);
+          setImageFile(file.name);
         }}
       />
       <ImageDragAndDrop
         ref={dragAndDropContainerRef}
-        onDragSuccess={file => {
-          debugger;
-          setImageFileName(file.name);
-        }}
+        onDragSuccess={file => setImageFile(file.name)}
       />
     </FormControl>
   );

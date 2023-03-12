@@ -1,39 +1,22 @@
-import { Box, Typography } from '@mui/material';
-import {
-  collectionGroup,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
-import { db } from '#utils/firebase';
+// Libraries
+import { useCallback } from 'react';
+
+// Components
 import ResponsiveAppBar from '#components/AppBar/AppBar';
-import { AuthContext } from '#components/AuthProvider/AuthProvider';
 import { Recipe } from '#components/Recipes/Recipe/Recipe';
+import { Box, Typography } from '@mui/material';
+
+// Helpers
+import * as adapters from '#utils/firebase/adapters';
+import { useDataContext, useUserRecipes } from '#utils/firebase/hooks';
 
 export const MyRecipes = () => {
-  const [recipes, setRecipes] = useState();
-  const { currentUser } = useContext(AuthContext);
-
-  const recipesRef = collectionGroup(db, 'recipes');
-
-  const q = query(recipesRef, where('user', '==', currentUser.uid));
-
-  useEffect(() => {
-    // LISTEN (REALTIME)
-    return onSnapshot(
-      query(recipesRef, where('user', '==', currentUser.uid)),
-      () => {
-        getDocs(q).then(res => {
-          const recipes = res.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-          setRecipes(recipes);
-        });
-      },
-      console.log,
-    );
-  }, []);
+  const { cuisines, recipeTypes } = useDataContext();
+  const adapter = useCallback(
+    data => adapters.getRecipes({ cuisines, recipeTypes }, data),
+    [cuisines, recipeTypes],
+  );
+  const recipes = useUserRecipes({ adapter });
 
   return (
     <>
@@ -45,10 +28,9 @@ export const MyRecipes = () => {
         mx={2}
         my={2}
       >
-        {!!recipes?.length &&
-          recipes?.map((recipe, i) => (
-            <Recipe key={`recipe-${i + 1}`} recipe={recipe} />
-          ))}
+        {recipes?.map((recipe, i) => (
+          <Recipe key={`recipe-${i + 1}`} recipe={recipe} />
+        ))}
         {!recipes?.length && <Typography>No recipes found</Typography>}
       </Box>
     </>

@@ -3,6 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -13,9 +14,12 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import { auth } from '#utils/firebase';
 import { AddRecipeModal } from '#components/Recipes/Recipe/Add';
 import { useNavigate } from 'react-router-dom';
+import { Stack } from '@mui/material';
+import { useAuthContext } from '#utils/firebase/hooks';
 
 export default function ResponsiveAppBar() {
   // State
+  const { currentUser } = useAuthContext();
   const addRecipeRef = useRef({});
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -54,13 +58,26 @@ export default function ResponsiveAppBar() {
                 My recipes
               </Typography>
             </Box>
-
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <MenuIcon sx={{ color: 'white' }} />
-                </IconButton>
-              </Tooltip>
+              <Stack direction="row" spacing={2}>
+                {!!currentUser?.photoURL && (
+                  <Avatar
+                    alt={currentUser.name ?? currentUser.displayName}
+                    title={currentUser.name ?? currentUser.displayName}
+                    src={currentUser.photoURL}
+                  />
+                )}
+                {!currentUser?.photoURL && (
+                  <Typography textAlign="center">
+                    {currentUser.name ?? currentUser.displayName}
+                  </Typography>
+                )}
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <MenuIcon sx={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
               <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"

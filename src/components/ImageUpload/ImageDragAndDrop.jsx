@@ -1,15 +1,17 @@
 // Libraries
-import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 // Components
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+
+// Helpers
+import { fileToDataUrl } from '#utils/object';
 
 // Constants
 import * as TRANSLATIONS from '#constants/translations';
 
 // Styles
 import styles from './styles.module.css';
-import { dataUrlToFile, fileToDataUrl } from '#utils/object';
 
 const handleCommonEventSteps = callback => event => {
   event.preventDefault();

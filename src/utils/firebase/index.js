@@ -1,15 +1,17 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+// Libraries
+import { getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { serverTimestamp as _serverTimestamp } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore';
 import {
   getDownloadURL,
   getStorage,
   ref as getStorageRef,
   uploadBytes,
 } from 'firebase/storage';
-import { serverTimestamp as _serverTimestamp } from 'firebase/database';
-import { fileToDataUrl } from './object';
+
+// Helpers
+import { fileToDataUrl } from '#utils/object';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

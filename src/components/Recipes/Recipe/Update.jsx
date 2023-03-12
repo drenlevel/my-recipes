@@ -10,15 +10,15 @@ import {
   TextField,
 } from '@mui/material';
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { db } from '#utils/firebase';
 import { AddSchema } from '#schemas/AddRecipe.validator';
-import { AuthContext } from '#components/AuthProvider/AuthProvider';
+import { useAuthContext } from '#utils/firebase/hooks';
 
 export const UpdateRecipe = ({ open, setOpen, id }) => {
   const recipeRef = doc(db, 'recipes', id);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useAuthContext();
   const [recipe, setRecipe] = useState();
 
   useEffect(() => {

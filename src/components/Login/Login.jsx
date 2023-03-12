@@ -11,29 +11,39 @@ import {
   Typography,
   Divider,
 } from '@mui/material';
-import { FcGoogle } from 'react-icons/fc';
 import {
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
+import {
+  GoogleLoginButton,
+  GithubLoginButton,
+} from 'react-social-login-buttons';
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginFormSchema } from '#schemas/Login.validator';
-import { auth } from '#utils/firebase';
+import db, { auth } from '#utils/firebase';
 
 import styles from './styles.module.css';
+import { doc, setDoc } from 'firebase/firestore';
 
 const AUTH_ERROR_CODES = {
   CANCELLED_POPUP_REQ: 'auth/cancelled-popup-request',
   BLOCKED_POPUP_REQ: 'auth/popup-blocked',
   USER_NOT_FOUND: 'auth/user-not-found',
   WRONG_PASSWORD: 'auth/wrong-password',
+  EXISTING_ACCOUNT_DIFF_CREDS: 'auth/account-exists-with-different-credential',
 };
 
-const GOOGLE_PROVIDER = new GoogleAuthProvider();
+const providers = {
+  github: new GithubAuthProvider(),
+  google: new GoogleAuthProvider(),
+};
 
 export const Login = () => {
   //local state
@@ -50,7 +60,7 @@ export const Login = () => {
   } = useForm({ resolver: yupResolver(LoginFormSchema) });
 
   // handlers
-  const onSubmit = (data, withGoogle = false) => {
+  const onSubmit = (data, providerKey = '') => {
     const onError = err => {
       if (
         err.code === AUTH_ERROR_CODES.USER_NOT_FOUND ||
@@ -62,20 +72,44 @@ export const Login = () => {
         err.code === AUTH_ERROR_CODES.BLOCKED_POPUP_REQ
       ) {
         toast.error('Provider popup closed or login procedure cancelled!');
+      } else if (err.code === AUTH_ERROR_CODES.EXISTING_ACCOUNT_DIFF_CREDS) {
+        toast.error(
+          `The account you tried to sign in exists with different credentials!
+          \nDid you initially signed in with another provider?`,
+          { style: { textAlign: 'left' } },
+        );
       }
 
       console.error(err);
     };
 
-    if (data && !withGoogle) {
+    const onSuccess = ({ user: { displayName } }) => {
+      toast.success(`Welcome back, ${displayName}`);
+      navigate('/home');
+    };
+
+    if (data && typeof providerKey !== 'string') {
       signInWithEmailAndPassword(auth, data.email, data.password)
-        .then(() => navigate('/home'))
+        .then(onSuccess)
         .catch(onError);
-    } else if (withGoogle) {
-      signInWithPopup(auth, GOOGLE_PROVIDER)
-        .then(() => navigate('/home'))
-        .catch(onError);
+
+      return;
     }
+
+    if (!providers[providerKey]) return;
+
+    signInWithPopup(auth, providers[providerKey])
+      .then(async ({ user }) => {
+        setDoc(doc(db, 'users', user.uid), {
+          email: user.email,
+          name: user.displayName,
+          photoURL: user.photoURL,
+          metadata: { ...user.metadata },
+        }).catch(error => toast.error(error.message));
+
+        onSuccess({ user });
+      })
+      .catch(onError);
   };
 
   const handleClickShowPassword = () => setShowPassword(show => !show);
@@ -157,13 +191,8 @@ export const Login = () => {
         <Divider textAlign="left" sx={{ margin: '15px 0' }}>
           Providers
         </Divider>
-        <button
-          className={styles.googleSignInButton}
-          onClick={onSubmit.bind(null, undefined, true)}
-        >
-          <FcGoogle />
-          Sign in with Google
-        </button>
+        <GoogleLoginButton onClick={onSubmit.bind(null, undefined, 'google')} />
+        <GithubLoginButton onClick={onSubmit.bind(null, undefined, 'github')} />
       </Box>
     </>
   );

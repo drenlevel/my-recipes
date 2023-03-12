@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useContext,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,7 +8,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { AuthContext } from '#components/AuthProvider/AuthProvider';
+import { useAuthContext } from '#utils/firebase/hooks';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '#utils/firebase';
 import { AddSchema } from '#schemas/AddRecipe.validator';
@@ -24,7 +18,7 @@ import { toast } from 'react-hot-toast';
 export const AddRecipeModal = forwardRef((_, ref) => {
   // State
   const formRef = useRef({});
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useAuthContext();
   const [shown, setShown] = useState(false);
   const { register, handleSubmit, formState } = useForm(AddSchema);
   const { errors } = formState;

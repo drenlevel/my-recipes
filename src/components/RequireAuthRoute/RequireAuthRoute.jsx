@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { AuthContext } from '#components/AuthProvider/AuthProvider';
+import { useAuthContext } from '#utils/firebase/hooks';
 
 export const RequireAuthRoute = () => {
   const location = useLocation();
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useAuthContext();
 
   return currentUser ? (
     <Outlet />

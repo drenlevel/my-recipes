@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Visibility from '@mui/icons-material/Visibility';
@@ -33,19 +33,14 @@ export const SignUp = () => {
   } = useForm({ resolver: yupResolver(RegisterFormSchema) });
 
   // handlers
-  const onSubmit = async data => {
+  const onSubmit = async ({ fullName: displayName, email, password }) => {
     try {
-      const res = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(res.user, { displayName });
+      const userData = { email, password, name: displayName };
 
-      await setDoc(doc(db, 'users', res.user.uid), {
-        ...data,
-        name: data.name,
-      });
-      toast.success('Successfully created your account!');
+      await setDoc(doc(db, 'users', res.user.uid), userData);
+      toast.success(`Account created: ${email}!`);
       navigate('/login');
     } catch (err) {
       if (err.code === 'auth/email-already-in-use')
@@ -69,12 +64,12 @@ export const SignUp = () => {
         <Typography textAlign="center">Create an account</Typography>
         <TextField
           id="outlined-basic"
-          label="Name"
+          label="Full name"
           size="small"
           variant="outlined"
-          helperText={errors?.name?.message}
-          error={!!errors.name}
-          {...register('name')}
+          helperText={errors?.fullName?.message}
+          error={!!errors.fullName}
+          {...register('fullName')}
         />
         <TextField
           id="outlined-basic"

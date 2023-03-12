@@ -5,12 +5,6 @@ import { camelCase, constantCase } from 'change-case';
 import * as TRANSLATIONS from '#constants/translations';
 
 /**
- * @typedef {('ID' | 'TITLE' | 'DESCRIPTION' | 'IMAGE' | 'CUISINES' | 'TYPE' | 'COOKING_TIME' | 'INGREDIENTS' | 'INSTRUCTIONS' | 'SERVINGS')} RecipeKeys
- * @typedef {('id' | 'title' | 'description' | 'image' | 'cuisines' | 'type' | 'cookingTime' | 'ingredients' | 'instructions' | 'servings')} RecipeKeysCamelCase
- * @typedef {Record<RecipeKeysCamelCase, String>} GetAllReturnVal
- */
-
-/**
  * Translates `recipe` properties.
  * @param {RecipeKeys=} [rawKey=''] Key from the recipe schema. _Mandatory_
  * @returns {string} Translation of the given key from {@link TRANSLATIONS.RECIPE | recipe terms}.
