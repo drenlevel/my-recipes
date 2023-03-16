@@ -10,27 +10,29 @@ import {
   TextField,
 } from '@mui/material';
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { db } from '#utils/firebase';
 import { AddSchema } from '#schemas/AddRecipe.validator';
-import { useAuthContext } from '#utils/firebase/hooks';
+import { useAuthContext } from '#utils/hooks';
 
 export const UpdateRecipe = ({ open, setOpen, id }) => {
-  const recipeRef = doc(db, 'recipes', id);
   const { currentUser } = useAuthContext();
   const [recipe, setRecipe] = useState();
 
+  // Memoized
+  const recipeRef = useMemo(() => doc(db, 'recipes', id), [id]);
+
+  // Effects
   useEffect(() => {
     // LISTEN (REALTIME)
     (async () => {
       let recipe = {};
+      debugger;
       const recipes = await getDoc(recipeRef);
       if (recipes.exists()) {
         recipe = recipes.data();
         setRecipe(recipe);
-      } else {
-        console.log('No such document!');
       }
     })();
   }, [recipeRef]);

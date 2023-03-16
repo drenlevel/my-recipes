@@ -1,6 +1,6 @@
 // Constants
 import { Auth } from '#constants/contexts';
-import { useAuthenticateUser } from '#utils/firebase/hooks';
+import { useAuthenticateUser } from '#utils/hooks';
 
 export const AuthProvider = ({ children }) => {
   const { loading, currentUser } = useAuthenticateUser();

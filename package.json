@@ -15,9 +15,9 @@
     "@emotion/styled": "^11.10.6",
     "@hookform/resolvers": "^2.9.11",
     "@mui/icons-material": "^5.11.11",
-    "@mui/material": "^5.11.12",
+    "@mui/material": "^5.11.13",
     "change-case": "^4.1.2",
-    "firebase": "^9.17.2",
+    "firebase": "^9.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.5",
@@ -36,7 +36,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.8.4",
-    "vite": "^4.1.4",
+    "vite": "^4.2.0",
     "vite-plugin-eslint": "^1.8.1"
   },
   "imports": {
@@ -47,5 +47,8 @@
     "#layouts/*": "./src/layouts/*",
     "#schemas/*": "./src/schemas/*",
     "#utils/*": "./src/utils/*"
+  },
+  "repository": {
+    "url": "git@github.com:drenlevel/my-recipes.git"
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuthContext } from '#utils/firebase/hooks';
+import { useAuthContext } from '#utils/hooks';
 
 export const RequireAuthRoute = () => {
   const location = useLocation();

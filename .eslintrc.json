@@ -5,7 +5,7 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:prettier/recommended",
+    "prettier",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
   ],
@@ -14,15 +14,16 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "prettier"],
   "rules": {
     "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
-    "semi": ["error", "always"],
-    "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off",
+    "no-debugger": "warn",
     "no-unused-vars": "warn",
-    "no-debugger": "warn"
+    "prettier/prettier": "warn",
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "semi": ["warn", "always"]
   },
   "settings": {
     "react": {

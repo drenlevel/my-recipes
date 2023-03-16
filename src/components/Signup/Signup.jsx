@@ -63,7 +63,6 @@ export const SignUp = () => {
       <Box display="flex" flexDirection="column" gap={2}>
         <Typography textAlign="center">Create an account</Typography>
         <TextField
-          id="outlined-basic"
           label="Full name"
           size="small"
           variant="outlined"
@@ -72,7 +71,6 @@ export const SignUp = () => {
           {...register('fullName')}
         />
         <TextField
-          id="outlined-basic"
           label="Email"
           size="small"
           variant="outlined"
@@ -81,7 +79,6 @@ export const SignUp = () => {
           {...register('email')}
         />
         <TextField
-          id="outlined-basic"
           label="Password"
           type={showPassword ? 'text' : 'password'}
           variant="outlined"

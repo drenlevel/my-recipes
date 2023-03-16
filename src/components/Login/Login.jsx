@@ -27,10 +27,10 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginFormSchema } from '#schemas/Login.validator';
-import db, { auth } from '#utils/firebase';
+import { auth } from '#utils/firebase';
+import { secureSetDoc } from '#utils/firebase/helpers';
 
 import styles from './styles.module.css';
-import { doc, setDoc } from 'firebase/firestore';
 
 const AUTH_ERROR_CODES = {
   CANCELLED_POPUP_REQ: 'auth/cancelled-popup-request',
@@ -102,13 +102,14 @@ export const Login = () => {
 
     signInWithPopup(auth, providers[providerKey])
       .then(async ({ user }) => {
-        setDoc(doc(db, 'users', user.uid), {
+        const data = {
           email: user.email,
           name: user.displayName,
           photoURL: user.photoURL,
           metadata: { ...user.metadata },
-        }).catch(error => toast.error(error.message));
+        };
 
+        secureSetDoc(data, 'users', user.uid);
         onSuccess({ user });
       })
       .catch(onError);
@@ -117,9 +118,10 @@ export const Login = () => {
   const handleClickShowPassword = () => setShowPassword(show => !show);
 
   return (
-    <>
+    <div data-login-form>
       <Box
         component="form"
+        className={styles.loginForm}
         onSubmit={handleSubmit(onSubmit)}
         borderRadius={2}
         boxShadow={3}
@@ -130,7 +132,6 @@ export const Login = () => {
         <Box display="flex" flexDirection="column" gap={2}>
           <Typography textAlign="center">Login to your account</Typography>
           <TextField
-            id="outlined-basic"
             label="Email"
             size="small"
             variant="outlined"
@@ -139,7 +140,6 @@ export const Login = () => {
             {...register('email')}
           />
           <TextField
-            id="outlined-basic"
             label="Password"
             type={showPassword ? 'text' : 'password'}
             size="small"
@@ -164,38 +164,44 @@ export const Login = () => {
           <Button type="submit" variant="contained">
             Login
           </Button>
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          flexDirection="column"
-          mt={2}
-        >
-          <Typography
-            textAlign="center"
-            fontSize={12}
-            className={styles.noAccountCreateOne}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            flexDirection="column"
+            mt={2}
           >
-            {`Don't have an account?`}
-            <Link to="/signup">Create</Link>
-          </Typography>
-          <Typography
-            textAlign="center"
-            fontSize={12}
-            className={styles.noAccountCreateOne}
-          >
-            Forgot Password?
-            <Link to="/forgot-password" style={{ fontSize: 12 }}>
-              Reset
-            </Link>
-          </Typography>
+            <Typography
+              textAlign="center"
+              fontSize={12}
+              className={styles.noAccountCreateOne}
+            >
+              {`Don't have an account?`}
+              <Link to="/signup">Create</Link>
+            </Typography>
+            <Typography
+              textAlign="center"
+              fontSize={12}
+              className={styles.noAccountCreateOne}
+            >
+              Forgot Password?
+              <Link to="/forgot-password" style={{ fontSize: 12 }}>
+                Reset
+              </Link>
+            </Typography>
+          </Box>
         </Box>
-        <Divider textAlign="left" sx={{ margin: '15px 0' }}>
-          Providers
-        </Divider>
-        <GoogleLoginButton onClick={onSubmit.bind(null, undefined, 'google')} />
-        <GithubLoginButton onClick={onSubmit.bind(null, undefined, 'github')} />
+        <Box className={styles.providers}>
+          <Divider textAlign="center" sx={{ margin: '15px 0' }}>
+            Providers
+          </Divider>
+          <GoogleLoginButton onClick={onSubmit.bind(null, undefined, 'google')}>
+            Login with Google
+          </GoogleLoginButton>
+          <GithubLoginButton onClick={onSubmit.bind(null, undefined, 'github')}>
+            Login with Github
+          </GithubLoginButton>
+        </Box>
       </Box>
-    </>
+    </div>
   );
 };

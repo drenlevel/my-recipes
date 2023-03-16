@@ -10,4 +10,11 @@
  *
  * @typedef {{id: string, path?: string, label: string}} BaseItemObject
  * @typedef {{title: string, description: string, cuisines: BaseItemObject[], type: BaseItemObject}} Recipe
+ *
+ * @typedef {{current: HTMLElement?}} HTMLElementRef
+ *
+ * @typedef {{id: number, label: string}[]} CuisineList
+ * @typedef {{id: number, label: string}[]} RecipeTypeList
+ * @typedef {{id: number, label: string, unit: string}} Ingredient
+ * @typedef {{pasta: Ingredient[], vegetables: Ingredient[]}} IngredientCollection
  */

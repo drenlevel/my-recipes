@@ -7,6 +7,7 @@ import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 
 // https://vitejs.dev/config/
+/** @type {import('vite').UserConfig} */
 export default defineConfig({
   plugins: [react(), eslint()],
   resolve: {
@@ -21,4 +22,5 @@ export default defineConfig({
     },
   },
   server: { port: 3000 },
+  mode: 'development',
 });

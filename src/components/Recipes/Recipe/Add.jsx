@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 import {
   Box,
   Button,
@@ -8,96 +8,72 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useAuthContext } from '#utils/firebase/hooks';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db } from '#utils/firebase';
+import { useAuthContext, useDataContext, useRecipeDialog } from '#utils/hooks';
 import { AddSchema } from '#schemas/AddRecipe.validator';
 import * as RecipeField from '#components/RecipeField/RecipeField';
-import { toast } from 'react-hot-toast';
+import {
+  reportCommonError,
+  secureAddDoc,
+  secureUpdateDoc,
+} from '#utils/firebase/helpers';
 
 export const AddRecipeModal = forwardRef((_, ref) => {
   // State
   const formRef = useRef({});
-  const { currentUser } = useAuthContext();
-  const [shown, setShown] = useState(false);
+  const { uid = '' } = useAuthContext()?.currentUser ?? {};
+  const [recipe, shown] = useRecipeDialog(ref);
   const { register, handleSubmit, formState } = useForm(AddSchema);
   const { errors } = formState;
+  const { recipeTypes, cuisines } = useDataContext();
 
   // Callbacks
-  const onSubmit = async data => {
-    try {
-      await addDoc(collection(db, 'recipes'), {
-        ...data,
-        user: currentUser.uid,
-        timeStamp: serverTimestamp(),
-      });
-      setShown(false);
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
-  // Hooks
-  useImperativeHandle(
-    ref,
-    () => ({ toggleShown: isOpen => setShown(state => isOpen ?? !state) }),
-    [],
+  const handleClose = useCallback(() => ref.current.hide(), [ref]);
+  const onRecipeSubmit = useCallback(
+    async data => {
+      try {
+        debugger;
+        const action = recipe?.id ? secureUpdateDoc : secureAddDoc;
+        await action({ ...data, user: uid }, 'recipes', recipe?.id);
+        debugger;
+        handleClose();
+      } catch (error) {
+        reportCommonError(error);
+      }
+    },
+    [handleClose, recipe?.id, uid],
   );
 
+  const generateProps = key => ({
+    ...register(key),
+    error: errors?.[key],
+    helperText: errors?.[key]?.message,
+  });
+
   return (
-    <Dialog open={shown} onClose={setShown.bind(null, false)}>
-      <Box ref={formRef} component="form" onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Add new recipe</DialogTitle>
+    <Dialog open={shown} onClose={handleClose}>
+      <Box
+        ref={formRef}
+        component="form"
+        onSubmit={handleSubmit(onRecipeSubmit)}
+      >
+        <DialogTitle>Add recipe</DialogTitle>
         <DialogContent>
-          <RecipeField.Title
-            {...register('title')}
-            error={errors?.title}
-            helperText={errors?.title?.message}
-          />
-          <RecipeField.Type
-            {...register('type')}
-            error={errors?.type}
-            helperText={errors?.type?.message}
-          />
-          <RecipeField.Description
-            {...register('description')}
-            error={errors?.description}
-            helperText={errors?.description?.message}
-          />
-          <RecipeField.Image
-            {...register('image')}
-            error={errors?.image}
-            helperText={errors?.image?.message}
-          />
-          <RecipeField.CookingTime
-            {...register('cookingTime')}
-            error={errors?.cookingTime}
-            helperText={errors?.cookingTime?.message}
-          />
-          <RecipeField.Ingredients
-            {...register('ingredients')}
-            error={errors?.ingredients}
-            helperText={errors?.ingredients?.message}
-          />
-          <RecipeField.Instructions
-            {...register('instructions')}
-            error={errors?.instructions}
-            helperText={errors?.instructions?.message}
-          />
+          <RecipeField.Title {...generateProps('title')} />
+          <RecipeField.Type {...generateProps('type')} options={recipeTypes} />
+          <RecipeField.Description {...generateProps('description')} />
+          <RecipeField.Image {...generateProps('image')} />
+          <RecipeField.CookingTime {...generateProps('cookingTime')} />
+          <RecipeField.Ingredients {...generateProps('ingredients')} />
+          <RecipeField.Instructions {...generateProps('instructions')} />
           <RecipeField.Cuisines
-            {...register('cuisines')}
-            error={errors?.cuisines}
-            helperText={errors?.cuisines?.message}
+            {...generateProps('cuisines')}
+            options={cuisines}
           />
-          <RecipeField.Servings
-            {...register('servings')}
-            error={errors?.servings}
-            helperText={errors?.servings?.message}
-          />
+          <RecipeField.Servings {...generateProps('servings')} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={setShown.bind(null, false)}>Cancel</Button>
-          <Button type="submit">Add recipe</Button>
+          <Button onClick={handleClose}>Close</Button>
+          <Button type="submit">{recipe?.id ? 'Save' : 'Add'}</Button>
         </DialogActions>
       </Box>
     </Dialog>

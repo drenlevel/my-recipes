@@ -1,100 +1,139 @@
-import React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { styled } from '@mui/material/styles';
-import EditIcon from '@mui/icons-material/Edit';
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
+
+// Components
+import { portalElm } from '#components/FixedElementsPortal';
+import { RecipeImage } from '#components/RecipeImage/RecipeImage';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Tooltip, Typography } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-import { UpdateRecipe } from './Update';
-import { DeleteRecipe } from './Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import { CardActionArea, CardActions, Tooltip } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import IconButton from '@mui/material/IconButton';
 
-export const Recipe = ({ recipe }) => {
-  //local state
-  const [expanded, setExpanded] = React.useState(false);
-  const [editRecipeModal, setEditRecipeModal] = React.useState(false);
-  const [deleteRecipeModal, setDeleteRecipeModal] = React.useState(false);
+import { dialogs } from '#components/Dialogs';
+import { useMediaQuery } from '#utils/hooks';
 
-  //handlers
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+import styles from './styles.module.css';
+import { toast } from 'react-hot-toast';
 
-  //hooks
-  const { pathname } = useLocation();
+export const AddNewRecipeButton = () => {
+  // State
+  const isTabletOrWider = useMediaQuery('tablet');
+  const iconButton = (
+    <Tooltip title="Add new recipe" followCursor={isTabletOrWider}>
+      <IconButton
+        aria-label="add new recipe"
+        color="primary"
+        id="button-add"
+        onClick={() => dialogs.recipe.add.show()}
+      >
+        <AddCircleIcon />
+      </IconButton>
+    </Tooltip>
+  );
 
-  const ExpandMore = styled(props => {
-    // eslint-disable-next-line no-unused-vars
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }));
+  // Effects
+  useEffect(() => {
+    portalElm.dataset.context = isTabletOrWider ? '' : 'button-add';
+  }, [isTabletOrWider]);
+
+  if (!isTabletOrWider) return createPortal(iconButton, portalElm);
 
   return (
-    <>
-      <Card>
-        <CardHeader
-          title={recipe?.title}
-          action={
-            pathname.includes('my-recipes') && (
-              <>
-                <Tooltip title="Edit recipe" arrow placement="top">
-                  <IconButton
-                    aria-label="settings"
-                    onClick={() => setEditRecipeModal(true)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete recipe" arrow placement="top">
-                  <IconButton
-                    aria-label="settings"
-                    onClick={() => setDeleteRecipeModal(true)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </>
-            )
-          }
-        />
-        <CardActions disableSpacing>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
+    <Card raised>
+      <CardContent className={styles['recipeCard--addNew']}>
+        {iconButton}
+      </CardContent>
+    </Card>
+  );
+};
+
+export const Recipe = ({ recipe, idx }) => {
+  // Callback
+  const navigate = useNavigate();
+
+  return (
+    <Card raised>
+      <CardContent className={styles['recipeCard--content']}>
+        <CardHeader title={recipe?.title} />
+        <Tooltip title="Click to view more info" arrow placement="bottom-start">
+          <CardActionArea
+            className={styles.recipeCard}
+            // onClick={() => dialogs.recipe.view.show(recipe)}
+            onClick={() => navigate(`/home?recipe=${recipe.id}`)}
           >
-            <ExpandMoreIcon />
-          </ExpandMore>
+            <CardContent
+              sx={{
+                display: 'flex',
+                placeItems: 'baseline',
+                height: '100%',
+                padding: '0',
+              }}
+            >
+              {recipe?.image && (
+                <RecipeImage
+                  idx={idx}
+                  imageRef={recipe?.image}
+                  style={{ width: '100%' }}
+                />
+              )}
+            </CardContent>
+          </CardActionArea>
+        </Tooltip>
+        <CardActions sx={{ justifyContent: 'flex-end' }}>
+          <Tooltip title="Share" arrow placement="top">
+            <IconButton
+              aria-label="share recipe"
+              onClick={() => {
+                const searchParamsObj = new URLSearchParams({
+                  recipe: recipe.id,
+                });
+                const recipeSearchSegment = `?${searchParamsObj.toString()}`;
+                const { origin, pathname } = window.location;
+                const recipeFullUrl = [
+                  origin,
+                  pathname,
+                  recipeSearchSegment,
+                ].join('');
+
+                navigator.clipboard.writeText(recipeFullUrl).then(
+                  () => {
+                    toast.success(`Recipe URL copied!\n\n${recipeFullUrl}`, {
+                      duration: 1000,
+                    });
+                  },
+                  () => {
+                    toast.error('Failed to copy the recipe URL!');
+                  },
+                );
+              }}
+            >
+              <ShareOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Edit" arrow placement="top">
+            <IconButton
+              aria-label="edit recipe"
+              onClick={() => dialogs.recipe.edit.show(recipe)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete" arrow placement="top">
+            <IconButton
+              aria-label="delete recipe"
+              onClick={() => dialogs.recipe.delete.show(recipe)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography paragraph>Description:</Typography>
-            <Typography paragraph>{recipe?.description}</Typography>
-          </CardContent>
-        </Collapse>
-      </Card>
-      <UpdateRecipe
-        open={editRecipeModal}
-        setOpen={setEditRecipeModal}
-        id={recipe.id}
-      />
-      <DeleteRecipe
-        open={deleteRecipeModal}
-        setOpen={setDeleteRecipeModal}
-        id={recipe.id}
-      />
-    </>
+      </CardContent>
+    </Card>
   );
 };

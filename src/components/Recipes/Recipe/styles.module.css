@@ -1,0 +1,56 @@
+.recipeCard {
+  --borderColor: rgb(225, 225, 225);
+}
+
+.recipeCard::before,
+.recipeCard::after {
+  content: '';
+  position: absolute;
+  border: none;
+  left: 2.5%;
+  right: 2.5%;
+}
+
+.recipeCard::before {
+  border-top: 1px solid var(--borderColor);
+  top: 0;
+}
+.recipeCard::before {
+  border-bottom: 1px solid var(--borderColor);
+  bottom: 0;
+}
+
+.recipeCard--content,
+.recipeCard--addNew {
+  padding: 0 !important;
+}
+
+@container card (min-width: 720px) {
+  .recipeCard--content,
+  .recipeCard--addNew {
+    width: 300px;
+  }
+}
+
+.recipeCard--content {
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto minmax(300px, 1fr) auto;
+}
+
+.recipeCard--addNew {
+  display: flex;
+  place-content: center;
+  place-items: center;
+  height: 100%;
+}
+
+.recipeCard--addNew svg {
+  font-size: 5rem;
+  filter: invert(1);
+  transition: 0.25s all ease-in-out;
+}
+
+.recipeCard--addNew svg:hover {
+  filter: none;
+}

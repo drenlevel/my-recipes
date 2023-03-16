@@ -1,10 +1,8 @@
-export const ID = 'Id';
-export const TITLE = 'Title';
-export const DESCRIPTION = 'Description';
-export const IMAGE = 'Image';
-export const CUISINES = 'Cuisines';
-export const TYPE = 'Type';
-export const COOKING_TIME = 'Cooking time';
-export const INGREDIENTS = 'Ingredients';
-export const INSTRUCTIONS = 'Instructions';
-export const SERVINGS = 'Servings';
+import { sentenceCase } from 'change-case';
+import * as FIELDS from '../fields';
+
+/** @type {Record<RecipeKeys, string>} */
+export const RECIPE = Object.entries(FIELDS).reduce(
+  (acc, [k, v]) => ({ ...acc, [k]: sentenceCase(v) }),
+  {},
+);

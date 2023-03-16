@@ -1,9 +1,5 @@
 // Helpers
-import {
-  useCuisines,
-  useIngredients,
-  useRecipeTypes,
-} from '#utils/firebase/hooks';
+import { useCuisines, useIngredients, useRecipeTypes } from '#utils/hooks';
 
 // Constants
 import { Data } from '#constants/contexts';

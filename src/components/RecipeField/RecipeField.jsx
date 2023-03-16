@@ -2,60 +2,76 @@
 import { forwardRef } from 'react';
 
 // Components
-import { TextField } from '@mui/material';
 import ImageUpload from '#components/ImageUpload/ImageUpload';
+import MultiSelect from '#components/MultiSelect/MultiSelect';
+import { TextField } from '@mui/material';
 
 // Helpers
 import * as translate from '#utils/translate';
+import { pascalCase } from 'change-case';
 
 const terms = translate.recipe.getAll();
+const defaultStaticProps = {
+  fullWidth: true,
+  id: 'name',
+  margin: 'dense',
+  size: 'medium',
+  variant: 'standard',
+};
 
-const makeField = (staticProps, displayName) => {
+const makeField = ({ component, ...staticProps }) => {
+  const displayName = pascalCase(staticProps.label);
+  const Component = component ?? TextField;
   const RecipeField = forwardRef((props, ref) => {
-    if (/^image$/i.test(displayName)) {
-      return <ImageUpload ref={ref} {...props} />;
-    }
-    // Select condition
-    else if (/^select$/i.test(displayName)) {
-      // do something
-    }
-
-    return (
-      <TextField
-        ref={ref}
-        fullWidth
-        id="name"
-        margin="dense"
-        size="medium"
-        variant="standard"
-        {...staticProps}
-        {...props}
-      />
-    );
+    return <Component ref={ref} {...staticProps} {...props} />;
   });
   RecipeField.displayName = displayName ?? 'RecipeField';
 
   return RecipeField;
 };
 
-export const Title = makeField({ label: terms.title, required: true }, 'Title');
-export const Type = makeField({ label: terms.type, required: true }, 'Type');
-export const Description = makeField(
-  { label: terms.description },
-  'Description',
-);
-export const Image = makeField({ label: terms.image, required: true }, 'Image');
-export const CookingTime = makeField(
-  { label: terms.cookingTime, required: true },
-  'CookingTime',
-);
-export const Ingredients = makeField(
-  { label: terms.ingredients, required: true },
-  'Ingredients',
-);
-export const Instructions = makeField(
-  { label: terms.instructions, required: true },
-  'Instructions',
-);
-export const Cuisines = makeField({ label: terms.cuisines }, 'Cuisines');
-export const Servings = makeField({ label: terms.servings }, 'Servings');
+export const Title = makeField({
+  ...defaultStaticProps,
+  label: terms.title,
+  required: true,
+});
+export const Type = makeField({
+  label: terms.type,
+  AutoCompleteProps: { limitTags: 2, multiple: false },
+  TextFieldProps: { ...defaultStaticProps, required: true, label: terms.type },
+  component: MultiSelect,
+});
+export const Description = makeField({
+  ...defaultStaticProps,
+  label: terms.description,
+});
+export const Image = makeField({
+  component: ImageUpload,
+  label: terms.image,
+  required: true,
+});
+export const CookingTime = makeField({
+  ...defaultStaticProps,
+  label: terms.cookingTime,
+  required: true,
+});
+export const Ingredients = makeField({
+  ...defaultStaticProps,
+  label: terms.ingredients,
+  required: true,
+});
+export const Instructions = makeField({
+  ...defaultStaticProps,
+  label: terms.instructions,
+  required: true,
+});
+export const Cuisines = makeField({
+  label: terms.cuisines,
+  AutoCompleteProps: { limitTags: 2 },
+  TextFieldProps: { ...defaultStaticProps, label: terms.cuisines },
+  component: MultiSelect,
+});
+export const Servings = makeField({
+  ...defaultStaticProps,
+  label: terms.servings,
+});

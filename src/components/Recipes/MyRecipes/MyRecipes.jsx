@@ -2,13 +2,13 @@
 import { useCallback } from 'react';
 
 // Components
-import ResponsiveAppBar from '#components/AppBar/AppBar';
+import MenuBar from '#components/MenuBar/MenuBar';
 import { Recipe } from '#components/Recipes/Recipe/Recipe';
 import { Box, Typography } from '@mui/material';
 
 // Helpers
 import * as adapters from '#utils/firebase/adapters';
-import { useDataContext, useUserRecipes } from '#utils/firebase/hooks';
+import { useDataContext, useUserRecipes } from '#utils/hooks';
 
 export const MyRecipes = () => {
   const { cuisines, recipeTypes } = useDataContext();
@@ -20,7 +20,7 @@ export const MyRecipes = () => {
 
   return (
     <>
-      <ResponsiveAppBar />
+      <MenuBar />
       <Box
         display="grid"
         gridTemplateColumns="1fr 1fr 1fr"

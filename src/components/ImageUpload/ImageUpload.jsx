@@ -26,7 +26,6 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
         size="large"
         variant="standard"
         ref={ref}
-        label="Image"
         InputProps={{
           readOnly: true,
           tabIndex: -1,
@@ -41,8 +40,8 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
                     const { setImage } = dragAndDropContainerRef.current ?? {};
                     fileUploadRef.current.value = '';
 
-                    setImage?.('');
-                    setImageFile('');
+                    setImage?.();
+                    setImageFile();
                   }}
                 >
                   <BackspaceOutlined
@@ -68,7 +67,7 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
           ),
         }}
         InputLabelProps={{ shrink: !!imageFile }}
-        value={imageFile?.name}
+        value={imageFile?.name ?? ''}
       />
       <input
         {...inputProps}
@@ -82,12 +81,12 @@ const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
           const { setImage } = dragAndDropContainerRef.current ?? {};
 
           setImage?.(file);
-          setImageFile(file.name);
+          setImageFile(file);
         }}
       />
       <ImageDragAndDrop
         ref={dragAndDropContainerRef}
-        onDragSuccess={file => setImageFile(file.name)}
+        onDragSuccess={setImageFile}
       />
     </FormControl>
   );

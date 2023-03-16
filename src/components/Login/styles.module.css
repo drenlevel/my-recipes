@@ -28,3 +28,34 @@
 .googleSignInButton:hover {
   background-color: rgb(87 100 120 / 1);
 }
+
+[data-login-form] {
+  container: login-form / inline-size;
+  height: 100vh;
+}
+
+[data-login-form] > form.loginForm {
+  max-width: 400px;
+  margin-inline: auto;
+}
+
+@container login-form (max-width: 700px) {
+  form.loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 0;
+    height: 100%;
+  }
+}
+
+.providers > button {
+  padding: 6px 16px !important;
+  height: unset !important;
+  display: flex !important;
+  justify-content: center;
+}
+
+.providers > button:not(:last-of-type) {
+  margin-bottom: 10px !important;
+}
