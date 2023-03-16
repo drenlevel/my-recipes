@@ -16,4 +16,5 @@ export default defineConfig({
       '#utils': path.join(__dirname, './src/utils'),
     },
   },
+  server: { port: 3000 },
 });

@@ -3,3 +3,28 @@
   justify-content: space-between;
   width: 100%;
 }
+
+.googleSignInButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  font-size: medium;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: rgb(255 255 255 / 1);
+  background-color: rgb(55 65 81 / 1);
+  padding: 1rem;
+  transition: all 250ms ease-in-out;
+}
+
+.googleSignInButton > svg {
+  font-size: 150%;
+}
+
+.googleSignInButton:hover {
+  background-color: rgb(87 100 120 / 1);
+}
