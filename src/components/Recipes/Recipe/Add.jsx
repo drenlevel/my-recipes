@@ -24,7 +24,7 @@ export const AddRecipeModal = forwardRef((_, ref) => {
   const [recipe, shown] = useRecipeDialog(ref);
   const { register, handleSubmit, formState } = useForm(AddSchema);
   const { errors } = formState;
-  const { recipeTypes, cuisines } = useDataContext();
+  const { recipeTypes, cuisines, ingredients } = useDataContext();
 
   // Callbacks
   const handleClose = useCallback(() => ref.current.hide(), [ref]);
@@ -63,7 +63,10 @@ export const AddRecipeModal = forwardRef((_, ref) => {
           <RecipeField.Description {...generateProps('description')} />
           <RecipeField.Image {...generateProps('image')} />
           <RecipeField.CookingTime {...generateProps('cookingTime')} />
-          <RecipeField.Ingredients {...generateProps('ingredients')} />
+          <RecipeField.Ingredients
+            {...generateProps('ingredients')}
+            data={ingredients}
+          />
           <RecipeField.Instructions {...generateProps('instructions')} />
           <RecipeField.Cuisines
             {...generateProps('cuisines')}

@@ -1,0 +1,103 @@
+.ingredientsGroupHeader {
+  background-color: rgb(39, 38, 38);
+  color: white;
+  padding: 10px 5px;
+  position: sticky;
+  text-align: center;
+  text-transform: uppercase;
+  top: -8px;
+  z-index: 1;
+}
+
+.ingredientsGroupHeader[data-category='pasta'] {
+  background-color: #e69122;
+}
+
+.ingredientsGroupHeader[data-category='vegetables'] {
+  background-color: #13652f;
+}
+
+.ingredientsAddContainer {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  grid-column-gap: 15px;
+}
+
+.ingredientsAddContainer > .ingredientsAutocomplete {
+  display: flex;
+  align-items: flex-end;
+}
+
+.ingredientsGroupHeader + ul > [data-ingredient-option] {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ingredientsGroupHeader + ul > [data-ingredient-option]::before,
+.ingredientsGroupHeader + ul > [data-ingredient-option]::after {
+  content: '';
+  position: absolute;
+  left: 5%;
+  height: 1px;
+  width: 90%;
+  background-color: rgb(225, 225, 225);
+}
+
+.ingredientsGroupHeader + ul > [data-ingredient-option]::before {
+  top: 0;
+}
+
+.ingredientsGroupHeader + ul > [data-ingredient-option]::after {
+  bottom: 0;
+}
+
+.ingredientsGroupHeader + ul > [data-ingredient-option] > :last-child,
+.unitLabel {
+  opacity: 0.8;
+  font-style: italic;
+  font-size: 90%;
+  color: rgb(19 93 166);
+  user-select: none;
+  white-space: pre;
+}
+
+.unitLabel {
+  padding: 0 7.5px;
+}
+
+.ingredientsAccordion {
+  --defaultColor: rgba(0, 0, 0, 0.42);
+  --defaultTextColor: rgba(0, 0, 0, 0.6);
+  --focusColor: #1976d2;
+
+  margin-top: 10px !important;
+  box-shadow: none !important;
+  padding-left: 0;
+  color: var(--defaultTextColor) !important;
+  border-bottom: 1px solid var(--defaultColor);
+}
+
+.ingredientsAccordion:focus-within {
+  color: var(--focusColor);
+  border-bottom: 2px solid var(--focusColor);
+}
+
+.ingredientsAccordion::before {
+  content: none !important;
+}
+
+.ingredientsAccordion > *,
+.ingredientsAccordion > [class*='Accordion'],
+.ingredientsAccordion > [class*='Accordion'] {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ingredientsAccordion .MuiAccordionSummary-root {
+  min-height: 36px !important;
+}
+
+.ingredientsAccordion .MuiAccordionSummary-content {
+  margin: 0 !important;
+}

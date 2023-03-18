@@ -1,5 +1,5 @@
 // Libraries
-import { collectionGroup } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import {
   useCallback,
   useContext,
@@ -30,9 +30,26 @@ const makeCustomHook = (path, adapter) => () => {
   useEffect(() => {
     if (!uid) return;
 
-    secureGetDocs(collectionGroup(db, path)).then(data =>
-      setData(adapter?.(data) ?? data),
-    );
+    const [mainPath, subPath] = Array.isArray(path) ? path : [path];
+
+    secureGetDocs(collection(db, mainPath))
+      .then(snapshot => {
+        if (subPath) {
+          return new Promise(resolve => {
+            const subPathDocs = {};
+
+            snapshot.forEach(async (doc, i, { length }) => {
+              const postsRef = collection(doc.ref, subPath);
+              subPathDocs[doc.id] = await secureGetDocs(postsRef);
+
+              i === length - 1 && resolve(subPathDocs);
+            });
+          });
+        }
+
+        return snapshot;
+      })
+      .then(data => setData(adapter?.(data) ?? data));
   }, [uid]);
 
   return data;
@@ -43,7 +60,7 @@ export const useDataContext = () => useContext(Contexts.Data);
 
 export const useCuisines = makeCustomHook('cuisines');
 export const useIngredients = makeCustomHook(
-  'ingredients',
+  ['ingredients', 'list'],
   adapters.getIngredients,
 );
 export const useRecipeTypes = makeCustomHook('recipeTypes');

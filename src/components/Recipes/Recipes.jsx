@@ -41,8 +41,7 @@ const RecipesData = () => {
   );
 
   useEffect(() => {
-    const { pasta, vegetables } = ingredients ?? {};
-    const checkList = [cuisines, pasta, vegetables, recipeTypes];
+    const checkList = [cuisines, ingredients, recipeTypes];
 
     setHasDependencies(!checkList.some(x => !x?.length));
   }, [cuisines, ingredients, recipeTypes]);

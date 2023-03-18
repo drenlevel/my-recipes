@@ -25,3 +25,38 @@
     font-size: 4rem;
   }
 }
+
+.ingredientList {
+  --borderVal: 1px solid silver;
+  border: var(--borderVal);
+  border-radius: 3px;
+  line-height: 1.5;
+  max-width: 320px;
+  padding-left: 25px;
+  margin: 0;
+}
+
+.ingredientList > li:not(:last-of-type) {
+  border-bottom: var(--borderVal);
+}
+
+.ingredientFieldValue {
+  display: flex;
+  justify-content: space-between;
+  max-width: 300px;
+}
+
+[data-field-container] > [data-field-value] {
+  margin: 25px 0;
+  padding-inline: 15;
+}
+
+[data-field-container] > [data-field-value]::before {
+  content: attr(data-no-value);
+  font-style: italic;
+  color: grey;
+}
+
+[data-field-container] > [data-field-value] > :not(:last-child) {
+  margin-right: 10px;
+}

@@ -27,8 +27,8 @@ const MultiSelect = forwardRef(
           onChange={onChange}
           ChipProps={{ color: 'primary' }}
           getOptionLabel={option => option.label}
-          renderOption={(props, option, { selected }) => (
-            <li {...props}>
+          renderOption={(optionProps, option, { selected }) => (
+            <li {...optionProps} key={option.id}>
               <Checkbox
                 icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                 checkedIcon={<CheckBoxIcon fontSize="small" />}

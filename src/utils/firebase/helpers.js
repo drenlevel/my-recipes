@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import {
   getDownloadURL,
@@ -44,7 +45,12 @@ const secureFirestoreAction =
 export const secureGetDocs = secureFirestoreAction({
   action: getDocs,
   callback: ({ docs }) => {
-    return docs.map(x => ({ id: x.id, path: x.ref?.path, ...x.data() }));
+    return docs.map(x => ({
+      id: x.id,
+      ref: x.ref,
+      path: x.ref?.path,
+      ...x.data(),
+    }));
   },
 });
 export const secureSetDoc = secureFirestoreAction({
@@ -103,3 +109,16 @@ export const secureDeleteDoc = secureFirestoreAction({
   action: deleteDoc,
   prepare: (...paths) => [doc(db, ...paths)],
 });
+
+export const batchSet = (coll = [], category) => {
+  const list = collection(db, category);
+  const batch = writeBatch(db);
+
+  // eslint-disable-next-line no-unused-vars
+  coll.forEach(({ path, id, ...data }) => {
+    const docRef = doc(list, id);
+    batch.set(docRef, data);
+  });
+
+  return batch.commit();
+};
