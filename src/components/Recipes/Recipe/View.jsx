@@ -1,3 +1,6 @@
+import { forwardRef, useCallback, useEffect, useMemo } from 'react';
+
+// Components
 import {
   Box,
   Button,
@@ -8,8 +11,7 @@ import {
   DialogTitle,
   Divider,
 } from '@mui/material';
-import { forwardRef, useCallback, useMemo } from 'react';
-
+import { List as IngredientsList } from '#components/Ingredient';
 import { RecipeImage } from '#components/RecipeImage/RecipeImage';
 
 // Helpers
@@ -44,24 +46,12 @@ const FieldInfo = ({ label, field, value: fieldValue }) => {
       case FIELDS.INGREDIENTS:
         if (!fieldValue.length) return;
 
-        return (
-          <ul className="ingredientList">
-            {fieldValue?.map(({ label, value, unit }, i) => (
-              <li key={`ingredient-${i + 1}`}>
-                <div className="ingredientFieldValue">
-                  <b>{label} </b>
-                  <i>
-                    ({value} {unit})
-                  </i>
-                </div>
-              </li>
-            ))}
-          </ul>
-        );
+        return <IngredientsList data={fieldValue} />;
+      case FIELDS.TYPE:
+        return <Chip label={fieldValue.label} color="info" />;
       case FIELDS.TITLE:
       case FIELDS.DESCRIPTION:
       case FIELDS.IMAGE:
-      case FIELDS.TYPE:
       case FIELDS.COOKING_TIME:
       case FIELDS.INSTRUCTIONS:
       case FIELDS.SERVINGS:
@@ -94,6 +84,10 @@ export const ViewRecipeModal = forwardRef((_, ref) => {
 
   // Callbacks
   const handleClose = useCallback(() => ref.current.hide(), [ref]);
+
+  useEffect(() => {
+    document.title = `My recipes${shown ? ' - ' + recipe?.title : ''}`;
+  }, [recipe?.title, shown]);
 
   return (
     <Dialog open={shown} onClose={handleClose} sx={{ maxHeight: '95%' }}>

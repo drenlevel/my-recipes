@@ -210,3 +210,35 @@ export const useGetRecipeFromSearch = callback => {
     recipeId && callback?.(recipeId, setRecipeId);
   }, [recipeId, callback]);
 };
+
+export const useMutableMap = ref => {
+  // State
+  const mapRef = useRef(new Map());
+  const [, updateState] = useState();
+  const forceUpdate = () => updateState({});
+
+  // Effects
+  useImperativeHandle(
+    ref,
+    () => ({
+      get values() {
+        return [...mapRef.current.values()];
+      },
+      get: key => mapRef.current.get(key),
+      set: (key, value) => {
+        mapRef.current.set(key, value);
+        forceUpdate();
+      },
+      delete: key => {
+        mapRef.current.delete(key);
+        forceUpdate();
+      },
+      clear: () => {
+        mapRef.current.clear();
+        forceUpdate();
+      },
+    }),
+    [],
+  );
+  useEffect(() => forceUpdate(), []);
+};

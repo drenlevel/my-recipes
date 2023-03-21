@@ -26,29 +26,9 @@
   }
 }
 
-.ingredientList {
-  --borderVal: 1px solid silver;
-  border: var(--borderVal);
-  border-radius: 3px;
-  line-height: 1.5;
-  max-width: 320px;
-  padding-left: 25px;
-  margin: 0;
-}
-
-.ingredientList > li:not(:last-of-type) {
-  border-bottom: var(--borderVal);
-}
-
-.ingredientFieldValue {
-  display: flex;
-  justify-content: space-between;
-  max-width: 300px;
-}
-
 [data-field-container] > [data-field-value] {
   margin: 25px 0;
-  padding-inline: 15;
+  padding-inline: 15px;
 }
 
 [data-field-container] > [data-field-value]::before {

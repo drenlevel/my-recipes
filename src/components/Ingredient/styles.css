@@ -60,10 +60,12 @@
   color: rgb(19 93 166);
   user-select: none;
   white-space: pre;
+  padding: 0 7.5px;
 }
 
-.unitLabel {
-  padding: 0 7.5px;
+.unitLabel[disabled] {
+  user-select: none;
+  opacity: 0.5;
 }
 
 .ingredientsAccordion {
@@ -100,4 +102,78 @@
 
 .ingredientsAccordion .MuiAccordionSummary-content {
   margin: 0 !important;
+}
+
+.ingredientsRegisteredContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.ingredientsRegisteredContainer > ul,
+.ingredientsRegisteredContainer .ingredientValueContainer {
+  max-width: 100%;
+}
+
+.ingredientList {
+  --borderVal: 1px solid silver;
+  border: var(--borderVal);
+  border-radius: 3px;
+  line-height: 1.5;
+  padding-left: 25px;
+  margin: 0;
+}
+
+.ingredientList > li:not(:last-of-type) {
+  border-bottom: var(--borderVal);
+}
+
+.ingredientValueContainer {
+  display: flex;
+  justify-content: space-between;
+  place-items: center;
+  padding: 5px 10px 5px 0;
+}
+
+.ingredientValueContainer:has(button[role='remove']) .ingredientValue {
+  cursor: pointer;
+}
+
+.ingredientValue[contenteditable='true'] {
+  user-select: text;
+  cursor: text;
+}
+
+.ingredientValue[contenteditable='true']:focus {
+  outline: none;
+  color: rgb(9, 74, 130);
+  font-weight: 900;
+}
+
+.ingredientValueContainer i:has(+ button[role='remove']) {
+  margin-right: 30px;
+}
+
+.ingredientValueContainer button[role='remove'] {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  right: -10px;
+  bottom: 0;
+  padding: 0 5px;
+}
+
+.ingredientValueContainer button[role='remove']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  border-left: 1px solid rgb(233, 233, 233);
+}
+
+.ingredientValueContainer button[role='remove'] > svg {
+  font-size: 85%;
 }

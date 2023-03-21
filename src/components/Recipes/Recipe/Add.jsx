@@ -26,8 +26,14 @@ export const AddRecipeModal = forwardRef((_, ref) => {
   const { errors } = formState;
   const { recipeTypes, cuisines, ingredients } = useDataContext();
 
+  const recipeStateRef = useRef({});
+
   // Callbacks
   const handleClose = useCallback(() => ref.current.hide(), [ref]);
+  const onRecipeStateChange = useCallback((key, data) => {
+    recipeStateRef.current[key] = data;
+  }, []);
+
   const onRecipeSubmit = useCallback(
     async data => {
       try {
@@ -64,10 +70,10 @@ export const AddRecipeModal = forwardRef((_, ref) => {
           <RecipeField.Image {...generateProps('image')} />
           <RecipeField.CookingTime {...generateProps('cookingTime')} />
           <RecipeField.Ingredients
-            {...generateProps('ingredients')}
             data={ingredients}
+            onChange={onRecipeStateChange.bind(null, 'ingredients')}
           />
-          <RecipeField.Instructions {...generateProps('instructions')} />
+          <RecipeField.Instructions />
           <RecipeField.Cuisines
             {...generateProps('cuisines')}
             options={cuisines}
