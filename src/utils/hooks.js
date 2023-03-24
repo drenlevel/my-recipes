@@ -78,7 +78,7 @@ export const useUserRecipes = ({ user, adapter, delay = false }) => {
 
   // Memoized
   const userId = useMemo(
-    () => 'U2rpVdyS5peat2IVygaJuqXWTUY2' || (user?.uid ?? currentUser?.uid),
+    () => user?.uid ?? currentUser?.uid,
     [user?.uid, currentUser?.uid],
   );
   const { query } = useMemo(() => getRecipesQuery(userId), [userId]);

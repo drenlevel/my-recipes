@@ -7,23 +7,22 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-import { useForm } from 'react-hook-form';
 import { useAuthContext, useDataContext, useRecipeDialog } from '#utils/hooks';
-import { AddSchema } from '#schemas/AddRecipe.validator';
 import * as RecipeField from '#components/RecipeField/RecipeField';
 import {
-  reportCommonError,
   secureAddDoc,
+  secureGetDoc,
   secureUpdateDoc,
+  uploadImage,
 } from '#utils/firebase/helpers';
+
+const isNotEmpty = x => ![undefined, null].some(y => y === x);
 
 export const AddRecipeModal = forwardRef((_, ref) => {
   // State
   const formRef = useRef({});
   const { uid = '' } = useAuthContext()?.currentUser ?? {};
   const [recipe, shown] = useRecipeDialog(ref);
-  const { register, handleSubmit, formState } = useForm(AddSchema);
-  const { errors } = formState;
   const { recipeTypes, cuisines, ingredients } = useDataContext();
 
   const recipeStateRef = useRef({});
@@ -31,58 +30,69 @@ export const AddRecipeModal = forwardRef((_, ref) => {
   // Callbacks
   const handleClose = useCallback(() => ref.current.hide(), [ref]);
   const onRecipeStateChange = useCallback((key, data) => {
+    if (data?.target) {
+      data = data.target.value;
+    } else if (data?.ref) {
+      data = data.ref;
+    } else if (Array.isArray(data)) {
+      data = data.map(({ ref, value } = {}) => ({
+        ref,
+        ...(isNotEmpty(value) && { value }),
+      }));
+    }
+
     recipeStateRef.current[key] = data;
   }, []);
 
-  const onRecipeSubmit = useCallback(
-    async data => {
-      try {
-        debugger;
-        const action = recipe?.id ? secureUpdateDoc : secureAddDoc;
-        await action({ ...data, user: uid }, 'recipes', recipe?.id);
-        debugger;
-        handleClose();
-      } catch (error) {
-        reportCommonError(error);
-      }
-    },
-    [handleClose, recipe?.id, uid],
-  );
+  const onRecipeSubmit = useCallback(async () => {
+    const allData = recipeStateRef.current;
+    const action = recipe?.id ? secureUpdateDoc : secureAddDoc;
+    const currImageTitle = allData.image.name;
 
-  const generateProps = key => ({
-    ...register(key),
-    error: errors?.[key],
-    helperText: errors?.[key]?.message,
-  });
+    if (
+      (!!recipe?.image && recipe?.image !== currImageTitle) ||
+      !!currImageTitle
+    ) {
+      //
+    }
+
+    const image = uploadImage(allData.image);
+    const data = { ...allData, image, ownerId: uid };
+    const { path } = await action(data, 'recipes', recipe?.id);
+    const bbb = await secureGetDoc(path);
+    debugger;
+    handleClose();
+  }, [handleClose, recipe?.id, recipe?.image, uid]);
 
   return (
     <Dialog open={shown} onClose={handleClose}>
-      <Box
-        ref={formRef}
-        component="form"
-        onSubmit={handleSubmit(onRecipeSubmit)}
-      >
-        <DialogTitle>Add recipe</DialogTitle>
+      <Box ref={formRef} onSubmit={onRecipeSubmit}>
+        <DialogTitle>{recipe?.id ? 'Update' : 'Add'} recipe</DialogTitle>
         <DialogContent>
-          <RecipeField.Title {...generateProps('title')} />
-          <RecipeField.Type {...generateProps('type')} options={recipeTypes} />
-          <RecipeField.Description {...generateProps('description')} />
-          <RecipeField.Image {...generateProps('image')} />
-          <RecipeField.CookingTime {...generateProps('cookingTime')} />
+          <RecipeField.Title onChange={onRecipeStateChange} />
+          <RecipeField.Type
+            options={recipeTypes}
+            onChange={onRecipeStateChange}
+          />
+          <RecipeField.Description onChange={onRecipeStateChange} />
+          <RecipeField.Image onChange={onRecipeStateChange} />
+          <RecipeField.CookingTime onChange={onRecipeStateChange} />
           <RecipeField.Ingredients
             data={ingredients}
-            onChange={onRecipeStateChange.bind(null, 'ingredients')}
+            onChange={onRecipeStateChange}
           />
-          <RecipeField.Instructions />
+          <RecipeField.Instructions onChange={onRecipeStateChange} />
           <RecipeField.Cuisines
-            {...generateProps('cuisines')}
             options={cuisines}
+            onChange={onRecipeStateChange}
           />
-          <RecipeField.Servings {...generateProps('servings')} />
+          <RecipeField.Servings onChange={onRecipeStateChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
-          <Button type="submit">{recipe?.id ? 'Save' : 'Add'}</Button>
+          <Button onClick={onRecipeSubmit}>
+            {recipe?.id ? 'Save' : 'Add'}
+          </Button>
         </DialogActions>
       </Box>
     </Dialog>

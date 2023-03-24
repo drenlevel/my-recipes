@@ -33,7 +33,10 @@ const RecipesData = () => {
 
       const recipe = recipes.find(({ id }) => id === recipeId);
 
-      if (recipe) {
+      if (recipeId === 'new') {
+        setRecipeId('');
+        dialogs.recipe.add.show().then(() => setRecipeId(''));
+      } else if (recipe) {
         dialogs.recipe.view.show(recipe).then(() => setRecipeId(''));
       }
     },

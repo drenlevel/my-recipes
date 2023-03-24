@@ -20,6 +20,7 @@ import * as translate from '#utils/translate';
 
 // Constants
 import * as FIELDS from '#constants/fields';
+import { useNavigate } from 'react-router-dom';
 
 const terms = translate.recipe.getAll();
 const visibleFields = Object.entries(terms).filter(
@@ -81,9 +82,13 @@ const FieldInfo = ({ label, field, value: fieldValue }) => {
 export const ViewRecipeModal = forwardRef((_, ref) => {
   // State
   const [recipe, shown] = useRecipeDialog(ref);
+  const navigate = useNavigate();
 
   // Callbacks
-  const handleClose = useCallback(() => ref.current.hide(), [ref]);
+  const handleClose = useCallback(() => {
+    ref.current.hide();
+    navigate('/home');
+  }, [ref, navigate]);
 
   useEffect(() => {
     document.title = `My recipes${shown ? ' - ' + recipe?.title : ''}`;

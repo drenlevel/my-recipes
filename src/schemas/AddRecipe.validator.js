@@ -11,7 +11,8 @@ const requiredFields = translate.recipe.getSomeExcluded(
   'CUISINES',
 );
 const fieldEntries = Object.entries(requiredFields);
-const makeRequiredString = x => yup.string().required(`${x} is required!`);
+const makeRequiredString = () => yup.string();
+// const makeRequiredString = x => yup.string().required(`${x} is required!`);
 const reducer = (acc, [k, v]) => ({ ...acc, [k]: makeRequiredString(v) });
 
 export const AddSchema = {

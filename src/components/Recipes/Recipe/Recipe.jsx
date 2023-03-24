@@ -23,6 +23,7 @@ import { toast } from 'react-hot-toast';
 
 export const AddNewRecipeButton = () => {
   // State
+  const navigate = useNavigate();
   const isTabletOrWider = useMediaQuery('tablet');
   const iconButton = (
     <Tooltip title="Add new recipe" followCursor={isTabletOrWider}>
@@ -30,7 +31,7 @@ export const AddNewRecipeButton = () => {
         aria-label="add new recipe"
         color="primary"
         id="button-add"
-        onClick={() => dialogs.recipe.add.show()}
+        onClick={() => navigate('/home?recipe=new')}
       >
         <AddCircleIcon />
       </IconButton>
@@ -64,7 +65,6 @@ export const Recipe = ({ recipe, idx }) => {
         <Tooltip title="Click to view more info" arrow placement="bottom-start">
           <CardActionArea
             className={styles.recipeCard}
-            // onClick={() => dialogs.recipe.view.show(recipe)}
             onClick={() => navigate(`/home?recipe=${recipe.id}`)}
           >
             <CardContent

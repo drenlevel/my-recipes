@@ -13,12 +13,14 @@ export const getRecipes = (
   data,
 ) => {
   const getCuisines = ({ cuisines: cuisineRefs = [] } = {}) =>
-    cuisineRefs.map(({ path }) => cuisines.find(x => x.path === path)) ?? [];
+    cuisineRefs.map(({ ref } = {}) =>
+      cuisines.find(x => x.path === ref?.path),
+    ) ?? [];
   const getType = ({ type }) =>
-    recipeTypes?.find(x => x.path === type?.path) ?? {};
+    recipeTypes?.find(x => x.path === type?.ref?.path) ?? {};
   const getIngredients = ({ ingredients: ingredientsList = [] }) =>
-    ingredientsList.map(({ ref, value }) => ({
-      ...ingredients.find(ingredient => ingredient.path === ref.path),
+    ingredientsList.map(({ ref, value } = {}) => ({
+      ...ingredients.find(ingredient => ingredient.path === ref?.path),
       value,
     }));
 

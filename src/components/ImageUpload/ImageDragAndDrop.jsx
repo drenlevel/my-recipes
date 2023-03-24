@@ -22,6 +22,7 @@ const handleCommonEventSteps = callback => event => {
 const ImageDragAndDrop = forwardRef(({ onDragSuccess }, ref) => {
   // State
   const [image, setImage] = useState();
+  const [bb, setBb] = useState();
   const [imageTitle, setImageTitle] = useState('');
   const [dragging, setDragging] = useState(false);
 
@@ -33,10 +34,10 @@ const ImageDragAndDrop = forwardRef(({ onDragSuccess }, ref) => {
     setDragging(false);
 
     const [file] = dataTransfer.files;
+    setBb(file);
     fileToDataUrl(file).then(fileAsDataURI => {
       setImage(fileAsDataURI);
       setImageTitle(file.name);
-      // onDragSuccess(dataUrlToFile(fileAsDataURI, file.name));
       onDragSuccess(file);
     });
   });

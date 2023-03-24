@@ -22,6 +22,7 @@ import { recipe as translateRecipe } from '#utils/translate';
 
 // Constants
 import { MAX_INPUT_VALUE } from '#constants/values';
+import { INGREDIENTS as fieldName } from '#constants/fields';
 
 const INGREDIENTS_LABEL = translateRecipe('INGREDIENTS');
 
@@ -48,7 +49,7 @@ const Ingredients = forwardRef(({ data, onChange }, ref) => {
     const ingredientsData = { ...selectedIngredient, value: ingredientValue };
 
     ingredientsListRef.current.set(id, ingredientsData);
-    onChange?.(ingredientsListRef.current.values);
+    onChange?.(fieldName, ingredientsListRef.current.values);
     inputsRef.current.search.clear();
     inputsRef.current.search.open();
   }, [selectedIngredient, ingredientValue, onChange]);
@@ -57,7 +58,7 @@ const Ingredients = forwardRef(({ data, onChange }, ref) => {
       const item = ingredientsListRef.current.get(id);
 
       ingredientsListRef.current[action]?.(id, { ...item, value });
-      onChange?.(ingredientsListRef.current.values);
+      onChange?.(fieldName, ingredientsListRef.current.values);
     },
     [onChange],
   );

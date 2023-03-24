@@ -24,7 +24,7 @@ const MultiSelect = forwardRef(
           disableCloseOnSelect
           multiple
           ref={ref}
-          onChange={onChange}
+          onChange={(_, options) => onChange(options)}
           ChipProps={{ color: 'primary' }}
           getOptionLabel={option => option.label}
           renderOption={(optionProps, option, { selected }) => (

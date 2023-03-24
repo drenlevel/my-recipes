@@ -17,7 +17,7 @@ export const RecipeImage = forwardRef(
         return setImageSrc(imageCache[_imageRef]);
       }
 
-      const imageRef = storageRef(storage, `images/${_imageRef}`);
+      const imageRef = storageRef(storage, _imageRef);
 
       getDownloadURL(imageRef)
         .then(url => {

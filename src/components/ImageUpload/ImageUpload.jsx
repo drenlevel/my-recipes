@@ -1,3 +1,6 @@
+// Libraries
+import { forwardRef, useEffect, useRef, useState } from 'react';
+
 // Components
 import { AddToPhotosOutlined, BackspaceOutlined } from '@mui/icons-material';
 import {
@@ -6,16 +9,21 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
+import ImageDragAndDrop from './ImageDragAndDrop';
 
 // Styles
-import { forwardRef, useRef, useState } from 'react';
-import ImageDragAndDrop from './ImageDragAndDrop';
 import './styles.module.css';
 
-const ImageUpload = forwardRef(({ inputProps, ...props }, ref) => {
+const ImageUpload = forwardRef(({ inputProps, onChange, ...props }, ref) => {
   const [imageFile, setImageFile] = useState('');
   const fileUploadRef = useRef({});
   const dragAndDropContainerRef = useRef({});
+
+  useEffect(() => {
+    onChange?.(imageFile);
+
+    return () => onChange?.();
+  }, [imageFile, onChange]);
 
   return (
     <FormControl fullWidth>
