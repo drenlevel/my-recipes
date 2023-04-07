@@ -19,7 +19,6 @@ import {
 import { toast } from 'react-hot-toast';
 
 // Helpers
-import { dataUrlToFile, fileToDataUrl } from '#utils/object';
 import db, { storage } from '.';
 import { snakeCase } from 'change-case';
 
