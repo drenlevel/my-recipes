@@ -77,10 +77,12 @@ export const useUserRecipes = ({ user, adapter, delay = false }) => {
   const [recipes, setRecipes] = useState([]);
 
   // Memoized
-  const userId = useMemo(
-    () => ('u3pInLBdR1YhHko2Ij4Eh5qclTz1' || user?.uid) ?? currentUser?.uid,
-    [user?.uid, currentUser?.uid],
-  );
+  const userId = useMemo(() => {
+    const baniUID = 'U2rpVdyS5peat2IVygaJuqXWTUY2';
+    const dreniUID = 'u3pInLBdR1YhHko2Ij4Eh5qclTz1';
+    // return (baniUID || user?.uid) ?? currentUser?.uid;
+    return (dreniUID || user?.uid) ?? currentUser?.uid;
+  }, [user?.uid, currentUser?.uid]);
   const { query } = useMemo(() => getRecipesQuery(userId), [userId]);
 
   // Callbacks

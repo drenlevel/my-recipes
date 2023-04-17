@@ -35,8 +35,48 @@
 
 .recipeCard--content {
   cursor: pointer;
-  display: grid;
-  grid-template-rows: auto minmax(300px, 1fr) auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+
+.astrit {
+  color: red !important;
+  position: absolute;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  background: white;
+  display: inline-block;
+}
+
+.astritHeader {
+  display: flex;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 40px;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  text-align: left;
+}
+
+
+/* .recipeCard--content button {} */
+.imageClass {
+  display: flex;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
 }
 
 .recipeCard--addNew {

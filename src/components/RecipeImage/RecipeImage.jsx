@@ -5,6 +5,8 @@ import { toast } from 'react-hot-toast';
 import { storage } from '#utils/firebase';
 import { Grow } from '@mui/material';
 
+import styles from '../Recipes/Recipe/styles.module.css';
+
 const imageCache = {};
 
 export const RecipeImage = forwardRef(
@@ -38,7 +40,12 @@ export const RecipeImage = forwardRef(
 
     return (
       <Grow in={!!imageSrc} timeout={(idx + 1) * 1000}>
-        <img {...props} ref={ref} src={imageSrc} />
+        <img
+          {...props}
+          ref={ref}
+          className={styles.imageClass}
+          src={imageSrc}
+        />
       </Grow>
     );
   },

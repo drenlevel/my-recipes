@@ -61,31 +61,18 @@ export const Recipe = ({ recipe, idx }) => {
   return (
     <Card raised>
       <CardContent className={styles['recipeCard--content']}>
-        <CardHeader title={recipe?.title} />
+        <CardHeader title={recipe?.title} className={styles.astritHeader} />
         <Tooltip title="Click to view more info" arrow placement="bottom-start">
-          <CardActionArea
-            className={styles.recipeCard}
-            onClick={() => navigate(`/home?recipe=${recipe.id}`)}
-          >
-            <CardContent
-              sx={{
-                display: 'flex',
-                placeItems: 'baseline',
-                height: '100%',
-                padding: '0',
-              }}
-            >
-              {recipe?.image && (
-                <RecipeImage
-                  idx={idx}
-                  imageRef={recipe?.image}
-                  style={{ width: '100%' }}
-                />
-              )}
-            </CardContent>
-          </CardActionArea>
+          {recipe?.image && (
+            <RecipeImage
+              idx={idx}
+              imageRef={recipe?.image}
+              style={{ width: '100%' }}
+              onClick={() => navigate(`/home?recipe=${recipe.id}`)}
+            />
+          )}
         </Tooltip>
-        <CardActions sx={{ justifyContent: 'flex-end' }}>
+        <CardActions className={styles.astrit}>
           <Tooltip title="Share" arrow placement="top">
             <IconButton
               aria-label="share recipe"
