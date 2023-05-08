@@ -13,3 +13,8 @@ body {
   width: 100%;
   text-align: center;
 }
+
+.standard-form {
+  max-width: 400px;
+  margin-inline: auto;
+}

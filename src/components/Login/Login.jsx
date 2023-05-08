@@ -121,12 +121,11 @@ export const Login = () => {
     <div data-login-form>
       <Box
         component="form"
-        className={styles.loginForm}
+        className="standard-form"
         onSubmit={handleSubmit(onSubmit)}
         borderRadius={2}
         boxShadow={3}
         p={3}
-        mx="30%"
         my="10%"
       >
         <Box display="flex" flexDirection="column" gap={2}>
@@ -184,7 +183,7 @@ export const Login = () => {
               className={styles.noAccountCreateOne}
             >
               Forgot Password?
-              <Link to="/forgot-password" style={{ fontSize: 12 }}>
+              <Link to="/reset-account" style={{ fontSize: 12 }}>
                 Reset
               </Link>
             </Typography>
