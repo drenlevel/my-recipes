@@ -39,11 +39,11 @@ export const RecipeImage = forwardRef(
     if (noTransition) return <img {...props} ref={ref} src={imageSrc} />;
 
     return (
-      <Grow in={!!imageSrc} timeout={(idx + 1) * 1000}>
+      <Grow in={!!imageSrc} timeout={(idx + 1) * 1000} sx={{ display: 'flex' }}>
         <img
           {...props}
           ref={ref}
-          className={styles.imageClass}
+          className={styles.imageCenteredCovered}
           src={imageSrc}
         />
       </Grow>

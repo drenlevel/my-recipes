@@ -30,6 +30,7 @@
 [data-field-container] > [data-field-value] {
   margin: 25px 0;
   padding-inline: 15px;
+  white-space: pre-wrap;
 }
 
 [data-field-container] > [data-field-value]::before {

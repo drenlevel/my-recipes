@@ -15,32 +15,11 @@ import { useForm } from 'react-hook-form';
 import { db } from '#utils/firebase';
 import { AddSchema } from '#schemas/AddRecipe.validator';
 import { useAuthContext } from '#utils/hooks';
+import { secureGetDoc } from '#utils/firebase/helpers';
 
 export const UpdateRecipe = ({ open, setOpen, id }) => {
   const { currentUser } = useAuthContext();
   const [recipe, setRecipe] = useState();
-
-  // Memoized
-  const recipeRef = useMemo(() => doc(db, 'recipes', id), [id]);
-
-  // Effects
-  useEffect(() => {
-    // LISTEN (REALTIME)
-    (async () => {
-      let recipe = {};
-      debugger;
-      const recipes = await getDoc(recipeRef);
-      if (recipes.exists()) {
-        recipe = recipes.data();
-        setRecipe(recipe);
-      }
-    })();
-  }, [recipeRef]);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // hook form
   const {
     register,
     handleSubmit,
@@ -49,6 +28,16 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
     resolver: yupResolver(AddSchema),
   });
 
+  // Memoized
+  const recipeRef = useMemo(() => doc(db, 'recipes', id), [id]);
+
+  // Effects
+  useEffect(() => {
+    secureGetDoc(recipeRef).then(setRecipe);
+  }, [recipeRef]);
+
+  // Callbacks
+  const handleClose = () => setOpen(false);
   const onSubmit = async data => {
     await updateDoc(recipeRef, {
       title: data.title,
