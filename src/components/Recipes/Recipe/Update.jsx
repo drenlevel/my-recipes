@@ -10,30 +10,32 @@ import {
   TextField,
 } from '@mui/material';
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { db } from '#utils/firebase';
-import { AddRecipeFormSchema } from '#schemas/AddRecipe.validator';
-import { AuthContext } from '#components/AuthProvider/AuthProvider';
+import { AddSchema } from '#schemas/AddRecipe.validator';
+import { useAuthContext } from '#utils/hooks';
 
 export const UpdateRecipe = ({ open, setOpen, id }) => {
-  const recipeRef = doc(db, 'recipes', id);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useAuthContext();
   const [recipe, setRecipe] = useState();
 
+  // Memoized
+  const recipeRef = useMemo(() => doc(db, 'recipes', id), [id]);
+
+  // Effects
   useEffect(() => {
     // LISTEN (REALTIME)
     (async () => {
       let recipe = {};
+      debugger;
       const recipes = await getDoc(recipeRef);
       if (recipes.exists()) {
         recipe = recipes.data();
         setRecipe(recipe);
-      } else {
-        console.log('No such document!');
       }
     })();
-  }, []);
+  }, [recipeRef]);
 
   const handleClose = () => {
     setOpen(false);
@@ -44,7 +46,7 @@ export const UpdateRecipe = ({ open, setOpen, id }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(AddRecipeFormSchema),
+    resolver: yupResolver(AddSchema),
   });
 
   const onSubmit = async data => {

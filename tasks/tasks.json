@@ -1,0 +1,10 @@
+[
+  ["Make 'Cuisines' a multi-select component", false],
+  ["Make 'Ingredients' a multi-select component", false],
+  ["Make 'Type' a single-select component", false],
+  [
+    "Make the selected recipe image to be able to upload to Firebase Storage",
+    false
+  ],
+  ["Make authenticated recipe URL segment", false]
+]

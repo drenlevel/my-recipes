@@ -1,19 +1,9 @@
-import { onAuthStateChanged } from 'firebase/auth';
-import React, { createContext, useEffect, useState } from 'react';
-import { auth } from '#utils/firebase';
-
-export const AuthContext = createContext({ currentUser: null });
+// Constants
+import { Auth } from '#constants/contexts';
+import { useAuthenticateUser } from '#utils/hooks';
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, user => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-  }, []);
+  const { loading, currentUser } = useAuthenticateUser();
 
   if (loading) {
     return (
@@ -30,5 +20,5 @@ export const AuthProvider = ({ children }) => {
     );
   }
 
-  return <AuthContext.Provider value={{ currentUser }} children={children} />;
+  return <Auth.Provider value={{ currentUser }}>{children}</Auth.Provider>;
 };

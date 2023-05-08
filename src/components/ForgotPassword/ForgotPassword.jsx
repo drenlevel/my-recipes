@@ -41,7 +41,6 @@ export const ForgotPassword = () => {
       <Box display="flex" flexDirection="column" gap={2}>
         <Typography textAlign="center">Write your email</Typography>
         <TextField
-          id="outlined-basic"
           label="Email"
           size="small"
           variant="outlined"

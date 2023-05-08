@@ -1,0 +1,96 @@
+.recipeCard {
+  --borderColor: rgb(225, 225, 225);
+}
+
+.recipeCard::before,
+.recipeCard::after {
+  content: '';
+  position: absolute;
+  border: none;
+  left: 2.5%;
+  right: 2.5%;
+}
+
+.recipeCard::before {
+  border-top: 1px solid var(--borderColor);
+  top: 0;
+}
+.recipeCard::before {
+  border-bottom: 1px solid var(--borderColor);
+  bottom: 0;
+}
+
+.recipeCard--content,
+.recipeCard--addNew {
+  padding: 0 !important;
+}
+
+@container card (min-width: 720px) {
+  .recipeCard--content,
+  .recipeCard--addNew {
+    width: 300px;
+    height: 420px;
+  }
+}
+
+.recipeCard--content {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+
+.astrit {
+  color: red !important;
+  position: absolute;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  background: white;
+  display: inline-block;
+}
+
+.astritHeader {
+  display: flex;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 40px;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  text-align: left;
+}
+
+
+/* .recipeCard--content button {} */
+.imageClass {
+  display: flex;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.recipeCard--addNew {
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+.recipeCard--addNew svg {
+  font-size: 5rem;
+  filter: invert(1);
+  transition: 0.25s all ease-in-out;
+}
+
+.recipeCard--addNew svg:hover {
+  filter: none;
+}

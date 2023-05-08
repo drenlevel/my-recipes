@@ -1,10 +1,12 @@
 import React from 'react';
-import ResponsiveAppBar from '#components/AppBar/AppBar';
+import MenuBar from '#components/MenuBar/MenuBar';
 import { Recipes } from '#components/Recipes/Recipes';
+import Dialogs from '#components/Dialogs';
 
 export const Home = () => (
   <>
-    <ResponsiveAppBar />
+    <MenuBar />
     <Recipes />
+    <Dialogs />
   </>
 );

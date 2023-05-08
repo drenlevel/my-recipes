@@ -1,6 +1,20 @@
+// Libraries
 import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-export const AddRecipeFormSchema = yup.object({
-  title: yup.string().required('Title is required'),
-  description: yup.string().required('Description is required'),
-});
+// Helpers
+import * as translate from '#utils/translate';
+
+const requiredFields = translate.recipe.getSomeExcluded(
+  'ID',
+  'SERVINGS',
+  'CUISINES',
+);
+const fieldEntries = Object.entries(requiredFields);
+const makeRequiredString = () => yup.string();
+// const makeRequiredString = x => yup.string().required(`${x} is required!`);
+const reducer = (acc, [k, v]) => ({ ...acc, [k]: makeRequiredString(v) });
+
+export const AddSchema = {
+  resolver: yupResolver(yup.object(fieldEntries.reduce(reducer, {}))),
+};
