@@ -23,7 +23,8 @@
     "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
-    "semi": ["warn", "always"]
+    "semi": ["warn", "always"],
+    "no-unreachable": ["warn"]
   },
   "settings": {
     "react": {

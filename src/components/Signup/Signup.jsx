@@ -53,11 +53,11 @@ export const SignUp = () => {
   return (
     <Box
       component="form"
+      className="standard-form"
       onSubmit={handleSubmit(onSubmit)}
       borderRadius={2}
       boxShadow={3}
       p={3}
-      mx="30%"
       my="10%"
     >
       <Box display="flex" flexDirection="column" gap={2}>

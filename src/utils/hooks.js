@@ -71,18 +71,16 @@ export const useRecipeTypes = makeCustomHook('recipeTypes');
  * @param {UserRecipesOptions} options
  * @return {Array<Recipe> | []}
  */
-export const useUserRecipes = ({ user, adapter, delay = false }) => {
+export const useUserRecipes = ({ adapter, delay = false }) => {
   // State
   const { currentUser } = useAuthContext();
   const [recipes, setRecipes] = useState([]);
 
   // Memoized
   const userId = useMemo(() => {
-    const baniUID = 'U2rpVdyS5peat2IVygaJuqXWTUY2';
-    const dreniUID = 'u3pInLBdR1YhHko2Ij4Eh5qclTz1';
-    // return (baniUID || user?.uid) ?? currentUser?.uid;
-    return (dreniUID || user?.uid) ?? currentUser?.uid;
-  }, [user?.uid, currentUser?.uid]);
+    // return 'u3pInLBdR1YhHko2Ij4Eh5qclTz1' // dreni;
+    return currentUser?.uid;
+  }, [currentUser?.uid]);
   const { query } = useMemo(() => getRecipesQuery(userId), [userId]);
 
   // Callbacks

@@ -9,7 +9,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { CardActionArea, CardActions, Tooltip } from '@mui/material';
+import { CardActions, Tooltip } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
@@ -61,18 +61,20 @@ export const Recipe = ({ recipe, idx }) => {
   return (
     <Card raised>
       <CardContent className={styles['recipeCard--content']}>
-        <CardHeader title={recipe?.title} className={styles.astritHeader} />
+        <CardHeader title={recipe?.title} />
         <Tooltip title="Click to view more info" arrow placement="bottom-start">
           {recipe?.image && (
-            <RecipeImage
-              idx={idx}
-              imageRef={recipe?.image}
-              style={{ width: '100%' }}
-              onClick={() => navigate(`/home?recipe=${recipe.id}`)}
-            />
+            <div style={{ display: 'flex' }}>
+              <RecipeImage
+                idx={idx}
+                imageRef={recipe?.image}
+                style={{ width: '100%' }}
+                onClick={() => navigate(`/home?recipe=${recipe.id}`)}
+              />
+            </div>
           )}
         </Tooltip>
-        <CardActions className={styles.astrit}>
+        <CardActions sx={{ justifyContent: 'center' }}>
           <Tooltip title="Share" arrow placement="top">
             <IconButton
               aria-label="share recipe"

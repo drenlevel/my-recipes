@@ -59,8 +59,9 @@ export const AddRecipeModal = forwardRef((_, ref) => {
     const image = uploadImage(allData.image);
     const data = { ...allData, image, ownerId: uid };
     const { path } = await action(data, 'recipes', recipe?.id);
-    const bbb = await secureGetDoc(path);
-    debugger;
+    // eslint-disable-next-line no-unused-vars
+    const docResult = await secureGetDoc(path);
+
     handleClose();
   }, [handleClose, recipe?.id, recipe?.image, uid]);
 

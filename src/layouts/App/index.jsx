@@ -9,7 +9,7 @@ import {
 // Components
 import { AuthProvider } from '#components/AuthProvider/AuthProvider';
 import { DataProvider } from '#components/DataProvider/DataProvider';
-import { ForgotPassword } from '#components/ForgotPassword/ForgotPassword';
+import ResetAccount from '#components/ResetAccount';
 import { Home } from '#components/Home/Home';
 import { Login } from '#components/Login/Login';
 import { RequireAuthRoute } from '#components/RequireAuthRoute/RequireAuthRoute';
@@ -31,7 +31,7 @@ export default function App() {
               </Route>
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-account" element={<ResetAccount />} />
               <Route path="/" element={<Navigate to="/home" />} />
             </Routes>
           </Router>
